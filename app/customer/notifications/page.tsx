@@ -13,6 +13,7 @@ import { Switch } from "@/components/ui/switch";
 import { Bell } from "lucide-react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
+import { useToast } from "@/components/ui/use-toast";
 
 export default function NotificationsSettings() {
   const router = useRouter();
@@ -20,6 +21,8 @@ export default function NotificationsSettings() {
   const [email, setEmail] = useState(true);
   const [sms, setSms] = useState(true);
   const [push, setPush] = useState(true);
+  const [saved, setSaved] = useState(false);
+  const { toast } = useToast();
 
   useEffect(() => {
     const userData = localStorage.getItem("melody_current_user");
@@ -47,7 +50,14 @@ export default function NotificationsSettings() {
   const save = () => {
     if (!user) return;
     const key = `melody_notifications_${user.phone}`;
-    localStorage.setItem(key, JSON.stringify({ email, sms, push }));
+    try {
+      localStorage.setItem(key, JSON.stringify({ email, sms, push }));
+      setSaved(true);
+      toast({ title: "Preferences saved", description: "Your notification preferences have been saved." });
+      setTimeout(() => setSaved(false), 2000);
+    } catch (e) {
+      toast({ title: "Save failed", description: "Could not save preferences. Please try again.", });
+    }
   };
 
   return (
@@ -117,7 +127,9 @@ export default function NotificationsSettings() {
             </div>
 
             <div className="flex gap-2">
-              <Button onClick={save}>Save Preferences</Button>
+              <Button onClick={save} disabled={saved}>
+                {saved ? "Saved" : "Save Preferences"}
+              </Button>
               <Link href="/customer/settings">
                 <Button variant="ghost">Back</Button>
               </Link>
