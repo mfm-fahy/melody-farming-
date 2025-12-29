@@ -24,6 +24,8 @@ import {
   LogOut,
   Briefcase,
   Calendar,
+  GraduationCap,
+  HardHat,
 } from "lucide-react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
@@ -57,6 +59,8 @@ export default function SettingsPage() {
   const hasFarmerRole = user.roles?.includes("farmer");
   const hasDriverRole = user.roles?.includes("driver");
   const hasEmployerRole = user.roles?.includes("employer");
+  const hasStudentRole = user.roles?.includes("student");
+  const hasWorkerRole = user.roles?.includes("worker");
   const farmerPending = user.farmerStatus === "pending";
   const driverPending = user.driverStatus === "pending";
   const employerPending = user.employerStatus === "pending";
@@ -238,6 +242,66 @@ export default function SettingsPage() {
                 </CardContent>
               </Card>
             </Link>
+
+            {/* Become a Student */}
+            <Link
+              href={
+                hasStudentRole
+                  ? "/customer/settings/services"
+                  : "/customer/settings/services/student/register"
+              }
+            >
+              <Card className="hover:shadow-md transition-shadow cursor-pointer">
+                <CardContent className="p-4 flex items-center justify-between">
+                  <div className="flex items-center gap-3">
+                    <div className="w-12 h-12 rounded-lg bg-green-500/10 flex items-center justify-center">
+                      <GraduationCap className="h-6 w-6 text-green-600" />
+                    </div>
+                    <div>
+                      <p className="font-semibold">Become a Student</p>
+                      <p className="text-xs text-muted-foreground">
+                        {hasStudentRole
+                          ? "Student services active"
+                          : "Offer part-time work and earn"}
+                      </p>
+                    </div>
+                  </div>
+                  <div className="flex items-center gap-2">
+                    {hasStudentRole && (
+                      <Badge className="bg-green-500">Active</Badge>
+                    )}
+                    <ChevronRight className="h-5 w-5 text-muted-foreground" />
+                  </div>
+                </CardContent>
+              </Card>
+            </Link>
+
+            {/* Become a Worker */}
+            <Link href="/customer/settings/services">
+              <Card className="hover:shadow-md transition-shadow cursor-pointer">
+                <CardContent className="p-4 flex items-center justify-between">
+                  <div className="flex items-center gap-3">
+                    <div className="w-12 h-12 rounded-lg bg-orange-500/10 flex items-center justify-center">
+                      <HardHat className="h-6 w-6 text-orange-600" />
+                    </div>
+                    <div>
+                      <p className="font-semibold">Become a Worker</p>
+                      <p className="text-xs text-muted-foreground">
+                        {hasWorkerRole
+                          ? "Worker services active"
+                          : "Find daily-wage jobs and earn"}
+                      </p>
+                    </div>
+                  </div>
+                  <div className="flex items-center gap-2">
+                    {hasWorkerRole && (
+                      <Badge className="bg-green-500">Active</Badge>
+                    )}
+                    <ChevronRight className="h-5 w-5 text-muted-foreground" />
+                  </div>
+                </CardContent>
+              </Card>
+            </Link>
           </CardContent>
         </Card>
 
@@ -277,18 +341,6 @@ export default function SettingsPage() {
                   <div className="flex items-center gap-3">
                     <Bell className="h-5 w-5 text-primary" />
                     <span className="font-medium">Notifications</span>
-                  </div>
-                  <ChevronRight className="h-5 w-5 text-muted-foreground" />
-                </CardContent>
-              </Card>
-            </Link>
-
-            <Link href="/customer/settings/services">
-              <Card className="hover:shadow-md transition-shadow cursor-pointer">
-                <CardContent className="p-4 flex items-center justify-between">
-                  <div className="flex items-center gap-3">
-                    <Briefcase className="h-5 w-5 text-primary" />
-                    <span className="font-medium">Services</span>
                   </div>
                   <ChevronRight className="h-5 w-5 text-muted-foreground" />
                 </CardContent>

@@ -17,6 +17,7 @@ import {
   Briefcase,
   Users,
   CheckCircle2,
+  Trash2,
 } from "lucide-react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
@@ -25,12 +26,27 @@ export default function ServicesPage() {
   const router = useRouter();
   const [user, setUser] = useState<any>(null);
 
+  // Check if profiles exist - must be called before any early returns
+  const [studentProfile, setStudentProfile] = useState<any>(null);
+  const [workerProfile, setWorkerProfile] = useState<any>(null);
+
   useEffect(() => {
     const userData = localStorage.getItem("melody_current_user");
     if (userData) {
       setUser(JSON.parse(userData));
     } else {
       router.push("/auth");
+    }
+  }, []);
+
+  useEffect(() => {
+    const studentData = localStorage.getItem("student_service_profile");
+    const workerData = localStorage.getItem("worker_service_profile");
+    if (studentData) {
+      setStudentProfile(JSON.parse(studentData));
+    }
+    if (workerData) {
+      setWorkerProfile(JSON.parse(workerData));
     }
   }, []);
 
@@ -46,9 +62,38 @@ export default function ServicesPage() {
   const hasWorkerRole = user.roles?.includes("worker");
   const hasEmployerRole = user.roles?.includes("employer");
 
-  // Check if profiles exist
-  const studentProfile = localStorage.getItem("student_service_profile");
-  const workerProfile = localStorage.getItem("worker_service_profile");
+  const handleDeleteStudentProfile = () => {
+    if (
+      confirm("Are you sure you want to delete your student service profile?")
+    ) {
+      localStorage.removeItem("student_service_profile");
+      // Also remove from global array
+      const existing = JSON.parse(
+        localStorage.getItem("melody_services_students") || "[]"
+      );
+      const filtered = existing.filter((p: any) => p.phone !== user.phone);
+      localStorage.setItem(
+        "melody_services_students",
+        JSON.stringify(filtered)
+      );
+      setStudentProfile(null);
+    }
+  };
+
+  const handleDeleteWorkerProfile = () => {
+    if (
+      confirm("Are you sure you want to delete your worker service profile?")
+    ) {
+      localStorage.removeItem("worker_service_profile");
+      // Also remove from global array
+      const existing = JSON.parse(
+        localStorage.getItem("melody_services_workers") || "[]"
+      );
+      const filtered = existing.filter((p: any) => p.phone !== user.phone);
+      localStorage.setItem("melody_services_workers", JSON.stringify(filtered));
+      setWorkerProfile(null);
+    }
+  };
 
   return (
     <div className="min-h-screen bg-background">
@@ -118,9 +163,24 @@ export default function ServicesPage() {
                     <p className="text-sm text-green-600 font-medium">
                       ✓ Profile Active - Ready to receive offers
                     </p>
-                    <Button variant="outline" className="w-full">
-                      Manage Profile
-                    </Button>
+                    <div className="flex gap-2">
+                      <Link
+                        href="/customer/settings/services/student"
+                        className="flex-1"
+                      >
+                        <Button variant="outline" className="w-full">
+                          Manage Profile
+                        </Button>
+                      </Link>
+                      <Button
+                        variant="outline"
+                        size="icon"
+                        onClick={handleDeleteStudentProfile}
+                        className="text-red-600 hover:text-red-700 hover:bg-red-50"
+                      >
+                        <Trash2 className="h-4 w-4" />
+                      </Button>
+                    </div>
                   </div>
                 ) : (
                   <Link href="/customer/settings/services/student">
@@ -173,9 +233,24 @@ export default function ServicesPage() {
                     <p className="text-sm text-green-600 font-medium">
                       ✓ Profile Active - Ready to receive job offers
                     </p>
-                    <Button variant="outline" className="w-full">
-                      Manage Profile
-                    </Button>
+                    <div className="flex gap-2">
+                      <Link
+                        href="/customer/settings/services/worker"
+                        className="flex-1"
+                      >
+                        <Button variant="outline" className="w-full">
+                          Manage Profile
+                        </Button>
+                      </Link>
+                      <Button
+                        variant="outline"
+                        size="icon"
+                        onClick={handleDeleteWorkerProfile}
+                        className="text-red-600 hover:text-red-700 hover:bg-red-50"
+                      >
+                        <Trash2 className="h-4 w-4" />
+                      </Button>
+                    </div>
                   </div>
                 ) : (
                   <Link href="/customer/settings/services/worker">

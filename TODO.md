@@ -9,6 +9,7 @@
 # TODO: Implement Services Module in Settings
 
 - [x] Add "Services" link to Account Settings in app/customer/settings/page.tsx
+- [x] Add "Become a Student" and "Become a Worker" upgrade options to settings page
 - [x] Create main services page at app/customer/settings/services/page.tsx with role-based options
 - [x] Create student services page at app/customer/settings/services/student/page.tsx with categories and profile creation
 - [x] Create worker services page at app/customer/settings/services/worker/page.tsx with categories and registration

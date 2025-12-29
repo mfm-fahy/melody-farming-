@@ -88,6 +88,16 @@ export default function StudentServicesPage() {
     if (userData) {
       const parsed = JSON.parse(userData);
       setUser(parsed);
+
+      // Check if user has completed student registration
+      const studentProfile = localStorage.getItem(
+        "student_registration_profile"
+      );
+      if (!studentProfile) {
+        router.push("/customer/settings/services/student/register");
+        return;
+      }
+
       const storedProfiles = JSON.parse(
         localStorage.getItem("melody_services_students") || "[]"
       );
