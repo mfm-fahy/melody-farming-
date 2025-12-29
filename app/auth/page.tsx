@@ -1,84 +1,100 @@
-"use client"
+"use client";
 
-import { useState } from "react"
-import { useRouter } from "next/navigation"
-import { Button } from "@/components/ui/button"
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
-import { Input } from "@/components/ui/input"
-import { Label } from "@/components/ui/label"
-import { Sprout, ArrowLeft, Smartphone, Lock, ShieldCheck, UserPlus } from "lucide-react"
-import Link from "next/link"
+import { useState } from "react";
+import { useRouter } from "next/navigation";
+import { Button } from "@/components/ui/button";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import {
+  Sprout,
+  ArrowLeft,
+  Smartphone,
+  Lock,
+  ShieldCheck,
+  UserPlus,
+} from "lucide-react";
+import Link from "next/link";
 
 export default function AuthPage() {
-  const router = useRouter()
+  const router = useRouter();
 
-  const [mode, setMode] = useState<"login" | "register">("login")
-  const [step, setStep] = useState<"phone" | "otp" | "details">("phone")
-  const [phone, setPhone] = useState("")
-  const [otp, setOtp] = useState("")
-  const [name, setName] = useState("")
-  const [address, setAddress] = useState("")
-  const [isLoading, setIsLoading] = useState(false)
+  const [mode, setMode] = useState<"login" | "register">("login");
+  const [step, setStep] = useState<"phone" | "otp" | "details" | "roles">(
+    "phone"
+  );
+  const [phone, setPhone] = useState("");
+  const [otp, setOtp] = useState("");
+  const [name, setName] = useState("");
+  const [address, setAddress] = useState("");
+  const [selectedRoles, setSelectedRoles] = useState<string[]>([]);
+  const [isLoading, setIsLoading] = useState(false);
 
   const handleSendOTP = async () => {
     if (phone.length !== 10) {
-      alert("Please enter a valid 10-digit phone number")
-      return
+      alert("Please enter a valid 10-digit phone number");
+      return;
     }
 
-    setIsLoading(true)
-    await new Promise((resolve) => setTimeout(resolve, 1000))
-    setIsLoading(false)
+    setIsLoading(true);
+    await new Promise((resolve) => setTimeout(resolve, 1000));
+    setIsLoading(false);
 
-    const existingUser = localStorage.getItem(`melody_user_${phone}`)
+    const existingUser = localStorage.getItem(`melody_user_${phone}`);
     if (mode === "login" && !existingUser) {
-      alert("Phone number not registered. Please register first.")
-      setMode("register")
-      return
+      alert("Phone number not registered. Please register first.");
+      setMode("register");
+      return;
     }
 
-    setStep("otp")
-    alert(`Demo: OTP sent to ${phone}. Use any 6 digits to continue.`)
-  }
+    setStep("otp");
+    alert(`Demo: OTP sent to ${phone}. Use any 6 digits to continue.`);
+  };
 
   const handleVerifyOTP = async () => {
     if (otp.length !== 6) {
-      alert("Please enter a valid 6-digit OTP")
-      return
+      alert("Please enter a valid 6-digit OTP");
+      return;
     }
 
-    setIsLoading(true)
-    await new Promise((resolve) => setTimeout(resolve, 1000))
-    setIsLoading(false)
+    setIsLoading(true);
+    await new Promise((resolve) => setTimeout(resolve, 1000));
+    setIsLoading(false);
 
     if (mode === "register") {
-      const existingUser = localStorage.getItem(`melody_user_${phone}`)
+      const existingUser = localStorage.getItem(`melody_user_${phone}`);
       if (!existingUser) {
-        setStep("details")
-        return
+        setStep("details");
+        return;
       }
     }
 
-    const userData = localStorage.getItem(`melody_user_${phone}`)
+    const userData = localStorage.getItem(`melody_user_${phone}`);
     if (userData) {
-      localStorage.setItem("melody_current_user", userData)
-      router.push("/customer")
+      localStorage.setItem("melody_current_user", userData);
+      router.push("/customer");
     } else {
-      alert("User not found. Please register.")
-      setMode("register")
-      setStep("phone")
+      alert("User not found. Please register.");
+      setMode("register");
+      setStep("phone");
     }
-  }
+  };
 
   const handleRegister = async () => {
     if (!name || !address) {
-      alert("Please fill all fields")
-      return
+      alert("Please fill all fields");
+      return;
     }
 
-    setIsLoading(true)
-    await new Promise((resolve) => setTimeout(resolve, 1000))
-    setIsLoading(false)
+    setIsLoading(true);
+    await new Promise((resolve) => setTimeout(resolve, 1000));
+    setIsLoading(false);
 
     const userData = {
       phone,
@@ -86,14 +102,50 @@ export default function AuthPage() {
       address,
       roles: ["customer"], // Default role only
       createdAt: new Date().toISOString(),
+    };
+
+    localStorage.setItem(`melody_user_${phone}`, JSON.stringify(userData));
+    localStorage.setItem("melody_current_user", JSON.stringify(userData));
+
+    alert("Registration successful! Welcome to Melody.");
+    router.push("/customer");
+  };
+
+  // Toggle a role in the selection list (adds/removes)
+  const toggleRole = (role: string) => {
+    setSelectedRoles((prev) =>
+      prev.includes(role) ? prev.filter((r) => r !== role) : [...prev, role]
+    );
+  };
+
+  // Complete registration from the roles step: persist user with selected roles
+  const handleCompleteRegistration = async () => {
+    if (!name || !address) {
+      // If details weren't filled for some reason, bring user back
+      alert("Please complete your details first.");
+      setStep("details");
+      return;
     }
 
-    localStorage.setItem(`melody_user_${phone}`, JSON.stringify(userData))
-    localStorage.setItem("melody_current_user", JSON.stringify(userData))
+    setIsLoading(true);
+    await new Promise((resolve) => setTimeout(resolve, 1000));
+    setIsLoading(false);
 
-    alert("Registration successful! Welcome to Melody.")
-    router.push("/customer")
-  }
+    const roles = Array.from(new Set(["customer", ...selectedRoles]));
+    const userData = {
+      phone,
+      name,
+      address,
+      roles,
+      createdAt: new Date().toISOString(),
+    };
+
+    localStorage.setItem(`melody_user_${phone}`, JSON.stringify(userData));
+    localStorage.setItem("melody_current_user", JSON.stringify(userData));
+
+    alert("Registration complete! Welcome to Melody.");
+    router.push("/customer");
+  };
 
   return (
     <div
@@ -119,18 +171,20 @@ export default function AuthPage() {
             <div className="flex items-center justify-center gap-3">
               <div className="bg-primary/10 p-3 rounded-xl">
                 <Smartphone className="h-8 w-8 text-primary" />
-              </div>
-              <div className="text-center">
                 <div className="flex items-center justify-center gap-2">
                   <Sprout className="h-6 w-6 text-primary" />
                   <span className="text-2xl font-bold">Melody</span>
                 </div>
-                <p className="text-sm text-muted-foreground font-medium mt-1">FROM OUR ROOTS</p>
+                <p className="text-sm text-muted-foreground font-medium mt-1">
+                  FROM OUR ROOTS
+                </p>
               </div>
             </div>
 
             <div className="text-center">
-              <CardTitle className="text-2xl mb-2">{mode === "login" ? "Welcome Back" : "Create Account"}</CardTitle>
+              <CardTitle className="text-2xl mb-2">
+                {mode === "login" ? "Welcome Back" : "Create Account"}
+              </CardTitle>
               <CardDescription>
                 {mode === "login"
                   ? "Login to start shopping from local farmers"
@@ -154,7 +208,9 @@ export default function AuthPage() {
                       placeholder="9876543210"
                       maxLength={10}
                       value={phone}
-                      onChange={(e) => setPhone(e.target.value.replace(/\D/g, ""))}
+                      onChange={(e) =>
+                        setPhone(e.target.value.replace(/\D/g, ""))
+                      }
                       className="flex-1"
                     />
                   </div>
@@ -174,7 +230,9 @@ export default function AuthPage() {
                     <span className="w-full border-t" />
                   </div>
                   <div className="relative flex justify-center text-xs uppercase">
-                    <span className="bg-background px-2 text-muted-foreground">Or continue with</span>
+                    <span className="bg-background px-2 text-muted-foreground">
+                      Or continue with
+                    </span>
                   </div>
                 </div>
 
@@ -207,9 +265,13 @@ export default function AuthPage() {
 
                 <div className="text-center pt-4 border-t">
                   <p className="text-sm text-muted-foreground">
-                    {mode === "login" ? "Don't have an account?" : "Already have an account?"}
+                    {mode === "login"
+                      ? "Don't have an account?"
+                      : "Already have an account?"}
                     <button
-                      onClick={() => setMode(mode === "login" ? "register" : "login")}
+                      onClick={() =>
+                        setMode(mode === "login" ? "register" : "login")
+                      }
                       className="ml-2 text-primary font-semibold underline"
                     >
                       {mode === "login" ? "Register" : "Login"}
@@ -231,23 +293,38 @@ export default function AuthPage() {
                       placeholder="000000"
                       maxLength={6}
                       value={otp}
-                      onChange={(e) => setOtp(e.target.value.replace(/\D/g, ""))}
+                      onChange={(e) =>
+                        setOtp(e.target.value.replace(/\D/g, ""))
+                      }
                       className="flex-1 text-center text-lg tracking-widest"
                     />
                   </div>
                   <p className="text-xs text-muted-foreground">
                     OTP sent to +91 {phone}
-                    <button onClick={() => setStep("phone")} className="ml-2 text-primary underline">
+                    <button
+                      onClick={() => setStep("phone")}
+                      className="ml-2 text-primary underline"
+                    >
                       Change
                     </button>
                   </p>
                 </div>
 
-                <Button onClick={handleVerifyOTP} disabled={isLoading || otp.length !== 6} className="w-full" size="lg">
+                <Button
+                  onClick={handleVerifyOTP}
+                  disabled={isLoading || otp.length !== 6}
+                  className="w-full"
+                  size="lg"
+                >
                   {isLoading ? "Verifying..." : "Verify OTP"}
                 </Button>
 
-                <Button variant="ghost" onClick={handleSendOTP} className="w-full" size="sm">
+                <Button
+                  variant="ghost"
+                  onClick={handleSendOTP}
+                  className="w-full"
+                  size="sm"
+                >
                   Resend OTP
                 </Button>
               </>
@@ -279,16 +356,129 @@ export default function AuthPage() {
                   </div>
                 </div>
 
-                <Button onClick={handleRegister} disabled={isLoading} className="w-full" size="lg">
+                <Button
+                  onClick={handleRegister}
+                  disabled={isLoading}
+                  className="w-full"
+                  size="lg"
+                >
+                  <UserPlus className="h-5 w-5 mr-2" />
+                  {isLoading ? "Creating Account..." : "Continue"}
+                </Button>
+              </>
+            )}
+
+            {step === "roles" && (
+              <>
+                <div className="space-y-4">
+                  <div className="text-center">
+                    <h3 className="text-lg font-semibold mb-2">
+                      Choose Your Roles
+                    </h3>
+                    <p className="text-sm text-muted-foreground">
+                      Select the services you want to access (you can change
+                      this later)
+                    </p>
+                  </div>
+
+                  <div className="space-y-3">
+                    <div
+                      className={`p-4 border rounded-lg cursor-pointer transition-colors ${
+                        selectedRoles.includes("student")
+                          ? "border-blue-500 bg-blue-50"
+                          : "border-gray-200 hover:border-gray-300"
+                      }`}
+                      onClick={() => toggleRole("student")}
+                    >
+                      <div className="flex items-center gap-3">
+                        <div className="w-5 h-5 border-2 rounded flex items-center justify-center">
+                          {selectedRoles.includes("student") && (
+                            <div className="w-3 h-3 bg-blue-500 rounded-full" />
+                          )}
+                        </div>
+                        <div>
+                          <p className="font-medium">Student Services</p>
+                          <p className="text-sm text-muted-foreground">
+                            Part-time work, tuition, IT support, design
+                          </p>
+                        </div>
+                      </div>
+                    </div>
+
+                    <div
+                      className={`p-4 border rounded-lg cursor-pointer transition-colors ${
+                        selectedRoles.includes("worker")
+                          ? "border-orange-500 bg-orange-50"
+                          : "border-gray-200 hover:border-gray-300"
+                      }`}
+                      onClick={() => toggleRole("worker")}
+                    >
+                      <div className="flex items-center gap-3">
+                        <div className="w-5 h-5 border-2 rounded flex items-center justify-center">
+                          {selectedRoles.includes("worker") && (
+                            <div className="w-3 h-3 bg-orange-500 rounded-full" />
+                          )}
+                        </div>
+                        <div>
+                          <p className="font-medium">Worker Services</p>
+                          <p className="text-sm text-muted-foreground">
+                            Daily-wage jobs, construction, plumbing, cleaning
+                          </p>
+                        </div>
+                      </div>
+                    </div>
+
+                    <div
+                      className={`p-4 border rounded-lg cursor-pointer transition-colors ${
+                        selectedRoles.includes("employer")
+                          ? "border-green-500 bg-green-50"
+                          : "border-gray-200 hover:border-gray-300"
+                      }`}
+                      onClick={() => toggleRole("employer")}
+                    >
+                      <div className="flex items-center gap-3">
+                        <div className="w-5 h-5 border-2 rounded flex items-center justify-center">
+                          {selectedRoles.includes("employer") && (
+                            <div className="w-3 h-3 bg-green-500 rounded-full" />
+                          )}
+                        </div>
+                        <div>
+                          <p className="font-medium">Employer Services</p>
+                          <p className="text-sm text-muted-foreground">
+                            Hire students and workers, manage assignments
+                          </p>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                <Button
+                  onClick={handleCompleteRegistration}
+                  disabled={isLoading || selectedRoles.length === 0}
+                  className="w-full"
+                  size="lg"
+                >
                   <UserPlus className="h-5 w-5 mr-2" />
                   {isLoading ? "Creating Account..." : "Complete Registration"}
+                </Button>
+
+                <Button
+                  variant="ghost"
+                  onClick={() => setStep("details")}
+                  className="w-full"
+                  size="sm"
+                >
+                  Back
                 </Button>
               </>
             )}
 
             <div className="flex items-center justify-center gap-2 pt-4 border-t">
               <ShieldCheck className="h-4 w-4 text-green-600" />
-              <span className="text-xs text-muted-foreground">Secure OTP Authentication</span>
+              <span className="text-xs text-muted-foreground">
+                Secure OTP Authentication
+              </span>
             </div>
           </CardContent>
         </Card>
@@ -296,11 +486,12 @@ export default function AuthPage() {
         <Card className="mt-4 bg-yellow-500/10 border-yellow-500/30">
           <CardContent className="p-4">
             <p className="text-sm text-center text-yellow-800">
-              <strong>Demo Mode:</strong> Use any 10-digit phone and any 6-digit OTP
+              <strong>Demo Mode:</strong> Use any 10-digit phone and any 6-digit
+              OTP. Select roles during registration to access Services.
             </p>
           </CardContent>
         </Card>
       </div>
     </div>
-  )
+  );
 }

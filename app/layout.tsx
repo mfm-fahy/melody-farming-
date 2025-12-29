@@ -1,7 +1,8 @@
-import type React from "react"
-import type { Metadata } from "next"
-import { Analytics } from "@vercel/analytics/next"
-import "./globals.css"
+import type React from "react";
+import type { Metadata } from "next";
+import { Analytics } from "@vercel/analytics/next";
+import "./globals.css";
+import UnhandledRejectionLogger from "./components/diagnostics/unhandled-rejection";
 
 export const metadata: Metadata = {
   title: "Melody - Fresh Farm to Your Home",
@@ -25,19 +26,21 @@ export const metadata: Metadata = {
     ],
     apple: "/apple-icon.png",
   },
-}
+};
 
 export default function RootLayout({
   children,
 }: Readonly<{
-  children: React.ReactNode
+  children: React.ReactNode;
 }>) {
   return (
     <html lang="en" suppressHydrationWarning>
       <body className={`font-sans antialiased`}>
         {children}
         <Analytics />
+        {/* Diagnostics: log unhandledrejection and window errors to console */}
+        <UnhandledRejectionLogger />
       </body>
     </html>
-  )
+  );
 }

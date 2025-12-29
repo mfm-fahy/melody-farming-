@@ -1,11 +1,11 @@
-"use client"
+"use client";
 
-import { useState } from "react"
-import { Button } from "@/components/ui/button"
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
-import { Badge } from "@/components/ui/badge"
-import { Input } from "@/components/ui/input"
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
+import { useState } from "react";
+import { Button } from "@/components/ui/button";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Badge } from "@/components/ui/badge";
+import { Input } from "@/components/ui/input";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import {
   LayoutDashboard,
   TruckIcon,
@@ -24,11 +24,11 @@ import {
   Sprout,
   Clock,
   ShieldCheck,
-} from "lucide-react"
-import Link from "next/link"
+} from "lucide-react";
+import Link from "next/link";
 
 export default function AdminPage() {
-  const [selectedTab, setSelectedTab] = useState("overview")
+  const [selectedTab, setSelectedTab] = useState("overview");
 
   // Dashboard Stats
   const stats = {
@@ -42,7 +42,7 @@ export default function AdminPage() {
     activeDrivers: 18,
     totalCustomers: 342,
     pendingApprovals: 5,
-  }
+  };
 
   // Pending Farmer Approvals
   const pendingFarmers = [
@@ -66,7 +66,7 @@ export default function AdminPage() {
       videoUploaded: false,
       appliedDate: "2025-12-23",
     },
-  ]
+  ];
 
   // Live Orders
   const liveOrders = [
@@ -105,7 +105,7 @@ export default function AdminPage() {
       eta: "-",
       progress: 0,
     },
-  ]
+  ];
 
   // Sample product stock (weight ranges only - no exact weight stored)
   const stockProducts = [
@@ -142,7 +142,7 @@ export default function AdminPage() {
       available: 50,
       price: 65,
     },
-  ]
+  ];
 
   const getStatusBadge = (status: string) => {
     switch (status) {
@@ -152,25 +152,25 @@ export default function AdminPage() {
             <TruckIcon className="h-3 w-3 mr-1" />
             In Transit
           </Badge>
-        )
+        );
       case "pickup":
         return (
           <Badge className="bg-yellow-500/10 text-yellow-700 border-yellow-500/20">
             <Clock className="h-3 w-3 mr-1" />
             Pickup
           </Badge>
-        )
+        );
       case "pending":
         return (
           <Badge className="bg-orange-500/10 text-orange-700 border-orange-500/20">
             <AlertCircle className="h-3 w-3 mr-1" />
             Pending
           </Badge>
-        )
+        );
       default:
-        return null
+        return null;
     }
-  }
+  };
 
   return (
     <div className="min-h-screen bg-background">
@@ -189,7 +189,9 @@ export default function AdminPage() {
                   <LayoutDashboard className="h-6 w-6 text-primary" />
                   Admin Control Panel
                 </h1>
-                <p className="text-sm text-muted-foreground">Melody Platform Management</p>
+                <p className="text-sm text-muted-foreground">
+                  Melody Platform Management
+                </p>
               </div>
             </div>
             <Badge className="bg-accent text-accent-foreground gap-1">
@@ -207,10 +209,16 @@ export default function AdminPage() {
             <CardContent className="p-6">
               <div className="flex items-center justify-between">
                 <div>
-                  <p className="text-sm text-muted-foreground mb-1">Total Orders</p>
-                  <p className="text-3xl font-bold text-primary">{stats.totalOrders}</p>
+                  <p className="text-sm text-muted-foreground mb-1">
+                    Total Orders
+                  </p>
+                  <p className="text-3xl font-bold text-primary">
+                    {stats.totalOrders}
+                  </p>
                   <p className="text-xs text-muted-foreground mt-1">
-                    <span className="text-green-600 font-semibold">{stats.activeOrders} active</span>
+                    <span className="text-green-600 font-semibold">
+                      {stats.activeOrders} active
+                    </span>
                   </p>
                 </div>
                 <ShoppingBag className="h-12 w-12 text-primary opacity-50" />
@@ -222,12 +230,16 @@ export default function AdminPage() {
             <CardContent className="p-6">
               <div className="flex items-center justify-between">
                 <div>
-                  <p className="text-sm text-muted-foreground mb-1">Total Revenue</p>
+                  <p className="text-sm text-muted-foreground mb-1">
+                    Total Revenue
+                  </p>
                   <p className="text-2xl font-bold text-green-700 flex items-center">
                     <IndianRupee className="h-5 w-5" />
                     {(stats.totalRevenue / 1000).toFixed(0)}k
                   </p>
-                  <p className="text-xs text-muted-foreground mt-1">Today: ₹{stats.todayRevenue.toLocaleString()}</p>
+                  <p className="text-xs text-muted-foreground mt-1">
+                    Today: ₹{stats.todayRevenue.toLocaleString()}
+                  </p>
                 </div>
                 <TrendingUp className="h-12 w-12 text-green-600 opacity-50" />
               </div>
@@ -239,9 +251,13 @@ export default function AdminPage() {
               <div className="flex items-center justify-between">
                 <div>
                   <p className="text-sm text-muted-foreground mb-1">Farmers</p>
-                  <p className="text-3xl font-bold text-secondary">{stats.totalFarmers}</p>
+                  <p className="text-3xl font-bold text-secondary">
+                    {stats.totalFarmers}
+                  </p>
                   <p className="text-xs text-muted-foreground mt-1">
-                    <span className="text-green-600 font-semibold">{stats.verifiedFarmers} verified</span>
+                    <span className="text-green-600 font-semibold">
+                      {stats.verifiedFarmers} verified
+                    </span>
                   </p>
                 </div>
                 <Sprout className="h-12 w-12 text-secondary opacity-50" />
@@ -254,9 +270,13 @@ export default function AdminPage() {
               <div className="flex items-center justify-between">
                 <div>
                   <p className="text-sm text-muted-foreground mb-1">Drivers</p>
-                  <p className="text-3xl font-bold text-accent-foreground">{stats.totalDrivers}</p>
+                  <p className="text-3xl font-bold text-accent-foreground">
+                    {stats.totalDrivers}
+                  </p>
                   <p className="text-xs text-muted-foreground mt-1">
-                    <span className="text-green-600 font-semibold">{stats.activeDrivers} online</span>
+                    <span className="text-green-600 font-semibold">
+                      {stats.activeDrivers} online
+                    </span>
                   </p>
                 </div>
                 <TruckIcon className="h-12 w-12 text-accent opacity-70" />
@@ -266,8 +286,12 @@ export default function AdminPage() {
         </div>
 
         {/* Main Tabs */}
-        <Tabs value={selectedTab} onValueChange={setSelectedTab} className="space-y-4">
-          <TabsList className="grid w-full grid-cols-4">
+        <Tabs
+          value={selectedTab}
+          onValueChange={setSelectedTab}
+          className="space-y-4"
+        >
+          <TabsList className="grid w-full grid-cols-6">
             <TabsTrigger value="overview" className="gap-2">
               <LayoutDashboard className="h-4 w-4" />
               <span className="hidden sm:inline">Overview</span>
@@ -288,6 +312,10 @@ export default function AdminPage() {
               <TruckIcon className="h-4 w-4" />
               <span className="hidden sm:inline">Drivers</span>
             </TabsTrigger>
+            <TabsTrigger value="services" className="gap-2">
+              <ShieldCheck className="h-4 w-4" />
+              <span className="hidden sm:inline">Services</span>
+            </TabsTrigger>
           </TabsList>
 
           {/* Overview Tab */}
@@ -299,9 +327,12 @@ export default function AdminPage() {
                   <div className="flex items-center gap-3">
                     <AlertCircle className="h-6 w-6 text-yellow-600 flex-shrink-0" />
                     <div className="flex-1">
-                      <p className="font-semibold text-yellow-800">Pending Farmer Approvals</p>
+                      <p className="font-semibold text-yellow-800">
+                        Pending Farmer Approvals
+                      </p>
                       <p className="text-sm text-muted-foreground">
-                        {stats.pendingApprovals} farmers waiting for verification
+                        {stats.pendingApprovals} farmers waiting for
+                        verification
                       </p>
                     </div>
                     <Button
@@ -324,7 +355,10 @@ export default function AdminPage() {
                     <MapPin className="h-5 w-5 text-primary" />
                     Live Orders Tracking
                   </CardTitle>
-                  <Badge variant="outline" className="bg-green-500/10 text-green-700 border-green-500/20">
+                  <Badge
+                    variant="outline"
+                    className="bg-green-500/10 text-green-700 border-green-500/20"
+                  >
                     {stats.activeOrders} Active
                   </Badge>
                 </div>
@@ -337,47 +371,72 @@ export default function AdminPage() {
                         <div className="flex items-start justify-between">
                           <div>
                             <p className="font-bold">{order.id}</p>
-                            <p className="text-sm text-muted-foreground">{order.product}</p>
+                            <p className="text-sm text-muted-foreground">
+                              {order.product}
+                            </p>
                           </div>
                           {getStatusBadge(order.status)}
                         </div>
 
                         <div className="grid grid-cols-1 md:grid-cols-3 gap-3 text-sm">
                           <div>
-                            <p className="text-xs text-muted-foreground">Customer</p>
+                            <p className="text-xs text-muted-foreground">
+                              Customer
+                            </p>
                             <p className="font-medium">{order.customer}</p>
                           </div>
                           <div>
-                            <p className="text-xs text-muted-foreground">Farmer</p>
+                            <p className="text-xs text-muted-foreground">
+                              Farmer
+                            </p>
                             <p className="font-medium">{order.farmer}</p>
                           </div>
                           <div>
-                            <p className="text-xs text-muted-foreground">Driver</p>
+                            <p className="text-xs text-muted-foreground">
+                              Driver
+                            </p>
                             <p className="font-medium">{order.driver}</p>
                           </div>
                         </div>
 
                         <div className="flex items-center justify-between">
                           <div>
-                            <p className="text-xs text-muted-foreground">Amount</p>
-                            <p className="font-bold text-primary text-lg">₹{order.amount.toLocaleString()}</p>
+                            <p className="text-xs text-muted-foreground">
+                              Amount
+                            </p>
+                            <p className="font-bold text-primary text-lg">
+                              ₹{order.amount.toLocaleString()}
+                            </p>
                           </div>
                           {order.eta !== "-" && (
                             <div className="text-right">
-                              <p className="text-xs text-muted-foreground">ETA</p>
+                              <p className="text-xs text-muted-foreground">
+                                ETA
+                              </p>
                               <p className="font-semibold">{order.eta}</p>
                             </div>
                           )}
                         </div>
 
                         <div className="flex gap-2">
-                          <Link href={`/customer/track/${order.id}`} className="flex-1">
-                            <Button size="sm" variant="outline" className="w-full gap-1 bg-transparent">
+                          <Link
+                            href={`/customer/track/${order.id}`}
+                            className="flex-1"
+                          >
+                            <Button
+                              size="sm"
+                              variant="outline"
+                              className="w-full gap-1 bg-transparent"
+                            >
                               <MapPin className="h-4 w-4" />
                               Track
                             </Button>
                           </Link>
-                          <Button size="sm" variant="outline" className="flex-1 gap-1 bg-transparent">
+                          <Button
+                            size="sm"
+                            variant="outline"
+                            className="flex-1 gap-1 bg-transparent"
+                          >
                             <Video className="h-4 w-4" />
                             View Videos
                           </Button>
@@ -397,9 +456,16 @@ export default function AdminPage() {
               <div className="flex gap-2">
                 <div className="relative">
                   <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-muted-foreground" />
-                  <Input placeholder="Search farmers..." className="pl-10 w-64" />
+                  <Input
+                    placeholder="Search farmers..."
+                    className="pl-10 w-64"
+                  />
                 </div>
-                <Button variant="outline" size="icon" className="bg-transparent">
+                <Button
+                  variant="outline"
+                  size="icon"
+                  className="bg-transparent"
+                >
                   <Filter className="h-4 w-4" />
                 </Button>
               </div>
@@ -425,10 +491,16 @@ export default function AdminPage() {
                               {farmer.village} • {farmer.phone}
                             </p>
                             <p className="text-sm mt-1">
-                              <span className="text-muted-foreground">Products:</span> {farmer.products}
+                              <span className="text-muted-foreground">
+                                Products:
+                              </span>{" "}
+                              {farmer.products}
                             </p>
                           </div>
-                          <Badge variant="outline" className="bg-yellow-500/10 text-yellow-700 border-yellow-500/20">
+                          <Badge
+                            variant="outline"
+                            className="bg-yellow-500/10 text-yellow-700 border-yellow-500/20"
+                          >
                             Pending Review
                           </Badge>
                         </div>
@@ -473,13 +545,19 @@ export default function AdminPage() {
                             size="sm"
                             className="flex-1 bg-primary hover:bg-primary/90"
                             onClick={() => {
-                              alert(`${farmer.name} has been approved as a verified farmer!`)
+                              alert(
+                                `${farmer.name} has been approved as a verified farmer!`
+                              );
                             }}
                           >
                             <CheckCircle2 className="h-4 w-4 mr-1" />
                             Approve
                           </Button>
-                          <Button size="sm" variant="outline" className="flex-1 gap-1 bg-transparent">
+                          <Button
+                            size="sm"
+                            variant="outline"
+                            className="flex-1 gap-1 bg-transparent"
+                          >
                             <Video className="h-4 w-4" />
                             View Documents
                           </Button>
@@ -488,7 +566,9 @@ export default function AdminPage() {
                             variant="destructive"
                             className="flex-1"
                             onClick={() => {
-                              alert(`${farmer.name}'s application has been rejected.`)
+                              alert(
+                                `${farmer.name}'s application has been rejected.`
+                              );
                             }}
                           >
                             <XCircle className="h-4 w-4 mr-1" />
@@ -514,7 +594,9 @@ export default function AdminPage() {
 
             <Card>
               <CardHeader>
-                <CardTitle className="flex items-center gap-2">Products</CardTitle>
+                <CardTitle className="flex items-center gap-2">
+                  Products
+                </CardTitle>
               </CardHeader>
               <CardContent className="space-y-3">
                 {stockProducts.map((p) => (
@@ -522,15 +604,33 @@ export default function AdminPage() {
                     <CardContent className="p-4">
                       <div className="flex items-start justify-between">
                         <div>
-                          <p className="font-bold">{p.type} • {p.breed}</p>
-                          <p className="text-sm text-muted-foreground">{p.farmer}</p>
-                          <p className="text-sm mt-1">Range: <span className="font-medium">{p.weightRangeMin}-{p.weightRangeMax}kg</span></p>
-                          <p className="text-xs text-muted-foreground mt-1">Minimum guaranteed: <span className="font-medium">{p.minimumGuaranteedWeight}kg</span></p>
+                          <p className="font-bold">
+                            {p.type} • {p.breed}
+                          </p>
+                          <p className="text-sm text-muted-foreground">
+                            {p.farmer}
+                          </p>
+                          <p className="text-sm mt-1">
+                            Range:{" "}
+                            <span className="font-medium">
+                              {p.weightRangeMin}-{p.weightRangeMax}kg
+                            </span>
+                          </p>
+                          <p className="text-xs text-muted-foreground mt-1">
+                            Minimum guaranteed:{" "}
+                            <span className="font-medium">
+                              {p.minimumGuaranteedWeight}kg
+                            </span>
+                          </p>
                         </div>
                         <div className="text-right">
-                          <p className="text-xs text-muted-foreground">Available</p>
+                          <p className="text-xs text-muted-foreground">
+                            Available
+                          </p>
                           <p className="font-medium">{p.available} units</p>
-                          <p className="text-xs text-muted-foreground mt-2">Price/kg</p>
+                          <p className="text-xs text-muted-foreground mt-2">
+                            Price/kg
+                          </p>
                           <p className="font-bold text-primary">₹{p.price}</p>
                         </div>
                       </div>
@@ -546,14 +646,27 @@ export default function AdminPage() {
               </CardHeader>
               <CardContent className="space-y-2">
                 {liveOrders.map((o) => (
-                  <div key={o.id} className="flex items-center justify-between p-3 border rounded">
+                  <div
+                    key={o.id}
+                    className="flex items-center justify-between p-3 border rounded"
+                  >
                     <div>
-                      <p className="font-bold">{o.id} — {o.product}</p>
-                      <p className="text-sm text-muted-foreground">{o.customer} • {o.farmer}</p>
+                      <p className="font-bold">
+                        {o.id} — {o.product}
+                      </p>
+                      <p className="text-sm text-muted-foreground">
+                        {o.customer} • {o.farmer}
+                      </p>
                     </div>
                     <div className="text-right">
-                      <p className="text-xs text-muted-foreground">Minimum guaranteed</p>
-                      <p className="font-medium">{o.minimumGuaranteedWeight ? `${o.minimumGuaranteedWeight}kg` : "—"}</p>
+                      <p className="text-xs text-muted-foreground">
+                        Minimum guaranteed
+                      </p>
+                      <p className="font-medium">
+                        {o.minimumGuaranteedWeight
+                          ? `${o.minimumGuaranteedWeight}kg`
+                          : "—"}
+                      </p>
                     </div>
                   </div>
                 ))}
@@ -597,5 +710,5 @@ export default function AdminPage() {
         </Tabs>
       </div>
     </div>
-  )
+  );
 }

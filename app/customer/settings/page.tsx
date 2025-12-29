@@ -282,6 +282,18 @@ export default function SettingsPage() {
                 </CardContent>
               </Card>
             </Link>
+
+            <Link href="/customer/settings/services">
+              <Card className="hover:shadow-md transition-shadow cursor-pointer">
+                <CardContent className="p-4 flex items-center justify-between">
+                  <div className="flex items-center gap-3">
+                    <Briefcase className="h-5 w-5 text-primary" />
+                    <span className="font-medium">Services</span>
+                  </div>
+                  <ChevronRight className="h-5 w-5 text-muted-foreground" />
+                </CardContent>
+              </Card>
+            </Link>
           </CardContent>
         </Card>
 
