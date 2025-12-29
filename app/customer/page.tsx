@@ -307,7 +307,10 @@ export default function CustomerPage() {
       // Weight range filter
       const hasWeightMatch = farmer.products.some(
         (p) =>
-          (((p as any).weightRangeMax ?? (p as any).weightMax ?? 0) >= filters.weightMin && ((p as any).weightRangeMin ?? (p as any).weightMin ?? 0) <= filters.weightMax)
+          ((p as any).weightRangeMax ?? (p as any).weightMax ?? 0) >=
+            filters.weightMin &&
+          ((p as any).weightRangeMin ?? (p as any).weightMin ?? 0) <=
+            filters.weightMax
       );
       if (!hasWeightMatch) return false;
 
@@ -345,8 +348,10 @@ export default function CustomerPage() {
       if (a.distance !== b.distance) return a.distance - b.distance;
 
       // Best price (lowest average price)
-      const aAvgPrice = a.products.reduce((sum, p) => sum + p.price, 0) / a.products.length;
-      const bAvgPrice = b.products.reduce((sum, p) => sum + p.price, 0) / b.products.length;
+      const aAvgPrice =
+        a.products.reduce((sum, p) => sum + p.price, 0) / a.products.length;
+      const bAvgPrice =
+        b.products.reduce((sum, p) => sum + p.price, 0) / b.products.length;
       return aAvgPrice - bAvgPrice;
     });
 
@@ -416,7 +421,9 @@ export default function CustomerPage() {
                 placeholder="Search for meat, milk, dairy products, vegetables..."
                 className="pl-10"
                 value={filters.keyword}
-                onChange={(e) => setFilters(prev => ({ ...prev, keyword: e.target.value }))}
+                onChange={(e) =>
+                  setFilters((prev) => ({ ...prev, keyword: e.target.value }))
+                }
               />
             </div>
 
@@ -424,12 +431,18 @@ export default function CustomerPage() {
             <Button
               variant={showFilters ? "default" : "outline"}
               onClick={() => setShowFilters(!showFilters)}
-              className={`w-full gap-2 ${showFilters ? "bg-primary text-primary-foreground hover:bg-primary/90" : ""}`}
+              className={`w-full gap-2 ${
+                showFilters
+                  ? "bg-primary text-primary-foreground hover:bg-primary/90"
+                  : ""
+              }`}
             >
               <Filter className="h-4 w-4" />
               {showFilters ? "Hide Filters" : "Show Filters"}
-              {Object.values(filters).some(v =>
-                Array.isArray(v) ? v.length > 0 : v !== "" && v !== false && v !== 0 && v !== 50 && v !== 1000
+              {Object.values(filters).some((v) =>
+                Array.isArray(v)
+                  ? v.length > 0
+                  : v !== "" && v !== false && v !== 0 && v !== 50 && v !== 1000
               ) && (
                 <Badge variant="secondary" className="ml-2">
                   Active
@@ -438,18 +451,28 @@ export default function CustomerPage() {
             </Button>
 
             {/* Applied Filters Tags */}
-            {(filters.productTypes.length > 0 || filters.keyword || filters.nearbyOnly || filters.bulkOnly ||
-              filters.weightMin > 0 || filters.weightMax < 50 || filters.priceMin > 0 || filters.priceMax < 1000) && (
+            {(filters.productTypes.length > 0 ||
+              filters.keyword ||
+              filters.nearbyOnly ||
+              filters.bulkOnly ||
+              filters.weightMin > 0 ||
+              filters.weightMax < 50 ||
+              filters.priceMin > 0 ||
+              filters.priceMax < 1000) && (
               <div className="flex flex-wrap gap-2">
-                {filters.productTypes.map(type => (
+                {filters.productTypes.map((type) => (
                   <Badge key={type} variant="secondary" className="gap-1">
                     {type}
                     <X
                       className="h-3 w-3 cursor-pointer"
-                      onClick={() => setFilters(prev => ({
-                        ...prev,
-                        productTypes: prev.productTypes.filter(t => t !== type)
-                      }))}
+                      onClick={() =>
+                        setFilters((prev) => ({
+                          ...prev,
+                          productTypes: prev.productTypes.filter(
+                            (t) => t !== type
+                          ),
+                        }))
+                      }
                     />
                   </Badge>
                 ))}
@@ -458,16 +481,20 @@ export default function CustomerPage() {
                     "{filters.keyword}"
                     <X
                       className="h-3 w-3 cursor-pointer"
-                      onClick={() => setFilters(prev => ({ ...prev, keyword: "" }))}
+                      onClick={() =>
+                        setFilters((prev) => ({ ...prev, keyword: "" }))
+                      }
                     />
                   </Badge>
                 )}
                 {filters.nearbyOnly && (
                   <Badge variant="secondary" className="gap-1">
-                    {'Nearby (<10km)'}
+                    {"Nearby (<10km)"}
                     <X
                       className="h-3 w-3 cursor-pointer"
-                      onClick={() => setFilters(prev => ({ ...prev, nearbyOnly: false }))}
+                      onClick={() =>
+                        setFilters((prev) => ({ ...prev, nearbyOnly: false }))
+                      }
                     />
                   </Badge>
                 )}
@@ -476,7 +503,9 @@ export default function CustomerPage() {
                     Bulk Available
                     <X
                       className="h-3 w-3 cursor-pointer"
-                      onClick={() => setFilters(prev => ({ ...prev, bulkOnly: false }))}
+                      onClick={() =>
+                        setFilters((prev) => ({ ...prev, bulkOnly: false }))
+                      }
                     />
                   </Badge>
                 )}
@@ -485,7 +514,13 @@ export default function CustomerPage() {
                     Weight: {filters.weightMin}-{filters.weightMax}kg
                     <X
                       className="h-3 w-3 cursor-pointer"
-                      onClick={() => setFilters(prev => ({ ...prev, weightMin: 0, weightMax: 50 }))}
+                      onClick={() =>
+                        setFilters((prev) => ({
+                          ...prev,
+                          weightMin: 0,
+                          weightMax: 50,
+                        }))
+                      }
                     />
                   </Badge>
                 )}
@@ -494,7 +529,13 @@ export default function CustomerPage() {
                     Price: ₹{filters.priceMin}-₹{filters.priceMax}
                     <X
                       className="h-3 w-3 cursor-pointer"
-                      onClick={() => setFilters(prev => ({ ...prev, priceMin: 0, priceMax: 1000 }))}
+                      onClick={() =>
+                        setFilters((prev) => ({
+                          ...prev,
+                          priceMin: 0,
+                          priceMax: 1000,
+                        }))
+                      }
                     />
                   </Badge>
                 )}
@@ -509,26 +550,30 @@ export default function CustomerPage() {
                   <div>
                     <Label className="text-sm font-medium">Product Types</Label>
                     <div className="flex flex-wrap gap-2 mt-2">
-                      {["Goat", "Sheep", "Desi Chicken"].map(type => (
+                      {["Goat", "Sheep", "Desi Chicken"].map((type) => (
                         <div key={type} className="flex items-center space-x-2">
                           <Checkbox
                             id={type}
                             checked={filters.productTypes.includes(type)}
                             onCheckedChange={(checked) => {
                               if (checked) {
-                                setFilters(prev => ({
+                                setFilters((prev) => ({
                                   ...prev,
-                                  productTypes: [...prev.productTypes, type]
+                                  productTypes: [...prev.productTypes, type],
                                 }));
                               } else {
-                                setFilters(prev => ({
+                                setFilters((prev) => ({
                                   ...prev,
-                                  productTypes: prev.productTypes.filter(t => t !== type)
+                                  productTypes: prev.productTypes.filter(
+                                    (t) => t !== type
+                                  ),
                                 }));
                               }
                             }}
                           />
-                          <Label htmlFor={type} className="text-sm">{type}</Label>
+                          <Label htmlFor={type} className="text-sm">
+                            {type}
+                          </Label>
                         </div>
                       ))}
                     </div>
@@ -544,7 +589,11 @@ export default function CustomerPage() {
                     <Slider
                       value={[filters.weightMin, filters.weightMax]}
                       onValueChange={([min, max]) =>
-                        setFilters(prev => ({ ...prev, weightMin: min, weightMax: max }))
+                        setFilters((prev) => ({
+                          ...prev,
+                          weightMin: min,
+                          weightMax: max,
+                        }))
                       }
                       max={50}
                       min={0}
@@ -561,7 +610,11 @@ export default function CustomerPage() {
                     <Slider
                       value={[filters.priceMin, filters.priceMax]}
                       onValueChange={([min, max]) =>
-                        setFilters(prev => ({ ...prev, priceMin: min, priceMax: max }))
+                        setFilters((prev) => ({
+                          ...prev,
+                          priceMin: min,
+                          priceMax: max,
+                        }))
                       }
                       max={1000}
                       min={0}
@@ -579,36 +632,48 @@ export default function CustomerPage() {
                         id="nearby"
                         checked={filters.nearbyOnly}
                         onCheckedChange={(checked) =>
-                          setFilters(prev => ({ ...prev, nearbyOnly: !!checked }))
+                          setFilters((prev) => ({
+                            ...prev,
+                            nearbyOnly: !!checked,
+                          }))
                         }
                       />
-                      <Label htmlFor="nearby" className="text-sm">{'Nearby farmers (< 10km)'}</Label>
+                      <Label htmlFor="nearby" className="text-sm">
+                        {"Nearby farmers (< 10km)"}
+                      </Label>
                     </div>
                     <div className="flex items-center space-x-2">
                       <Checkbox
                         id="bulk"
                         checked={filters.bulkOnly}
                         onCheckedChange={(checked) =>
-                          setFilters(prev => ({ ...prev, bulkOnly: !!checked }))
+                          setFilters((prev) => ({
+                            ...prev,
+                            bulkOnly: !!checked,
+                          }))
                         }
                       />
-                      <Label htmlFor="bulk" className="text-sm">Bulk/function hall supply available</Label>
+                      <Label htmlFor="bulk" className="text-sm">
+                        Bulk/function hall supply available
+                      </Label>
                     </div>
                   </div>
 
                   {/* Clear All Filters */}
                   <Button
                     variant="outline"
-                    onClick={() => setFilters({
-                      productTypes: [],
-                      keyword: "",
-                      weightMin: 0,
-                      weightMax: 50,
-                      priceMin: 0,
-                      priceMax: 1000,
-                      nearbyOnly: false,
-                      bulkOnly: false,
-                    })}
+                    onClick={() =>
+                      setFilters({
+                        productTypes: [],
+                        keyword: "",
+                        weightMin: 0,
+                        weightMax: 50,
+                        priceMin: 0,
+                        priceMax: 1000,
+                        nearbyOnly: false,
+                        bulkOnly: false,
+                      })
+                    }
                     className="w-full"
                   >
                     Clear All Filters
@@ -645,10 +710,12 @@ export default function CustomerPage() {
           <div className="flex items-center justify-center">
             <div className="relative w-full max-w-5xl bg-card border-2 border-primary/20 rounded-lg shadow-sm p-4 flex items-center justify-center animate-float hover:scale-110 transition-transform duration-300">
               <div className="text-center">
-                <h2 className="text-xl font-bold mb-1">Butcher Facility + Live Animal Delivery</h2>
+                <h2 className="text-xl font-bold mb-1">
+                  Butcher Facility + Live Animal Delivery
+                </h2>
                 <p className="text-sm text-muted-foreground max-w-2xl">
-                  Unlike other platforms, we provide professional butcher services alongside live animal delivery to your doorstep.
-                  Experience fresh, hygienic meat prepared by expert butchers.
+                  Unlike other platforms, we provide professional butcher
+                  services alongside live animal delivery to your doorstep.
                 </p>
               </div>
             </div>
@@ -697,197 +764,207 @@ export default function CustomerPage() {
                 No matching stock found
               </h3>
               <p className="text-muted-foreground mb-4 max-w-md">
-                Try adjusting your filters or search terms to find more farmers and products.
+                Try adjusting your filters or search terms to find more farmers
+                and products.
               </p>
               <Button
                 variant="outline"
-                onClick={() => setFilters({
-                  productTypes: [],
-                  keyword: "",
-                  weightMin: 0,
-                  weightMax: 50,
-                  priceMin: 0,
-                  priceMax: 1000,
-                  nearbyOnly: false,
-                  bulkOnly: false,
-                })}
+                onClick={() =>
+                  setFilters({
+                    productTypes: [],
+                    keyword: "",
+                    weightMin: 0,
+                    weightMax: 50,
+                    priceMin: 0,
+                    priceMax: 1000,
+                    nearbyOnly: false,
+                    bulkOnly: false,
+                  })
+                }
               >
                 Clear All Filters
               </Button>
             </div>
           ) : (
             filteredFarmers.map((farmer) => (
-            <Card
-              key={farmer.id}
-              className="hover:shadow-lg transition-shadow overflow-hidden group"
-            >
-              {/* Farmer Image */}
-              <div className="relative h-40 sm:h-48 overflow-hidden">
-                <img
-                  src={farmer.image || "/placeholder.svg"}
-                  alt={farmer.name}
-                  className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-300"
-                />
-                {farmer.verified && (
-                  <Badge className="absolute top-3 right-3 bg-accent text-accent-foreground gap-1">
-                    <ShieldCheck className="h-3 w-3" />
-                    Verified
-                  </Badge>
-                )}
-              </div>
-
-              <CardHeader className="pb-3">
-                <div className="flex items-start justify-between">
-                  <div>
-                    <CardTitle className="text-lg">{farmer.name}</CardTitle>
-                    <p className="text-sm text-muted-foreground flex items-center gap-1 mt-1">
-                      <MapPin className="h-3 w-3" />
-                      {farmer.village} • {farmer.distance}
-                    </p>
-                  </div>
-                  <div className="flex items-center gap-1 bg-primary/10 px-2 py-1 rounded-md">
-                    <Star className="h-4 w-4 fill-primary text-primary" />
-                    <span className="text-sm font-semibold">
-                      {farmer.rating}
-                    </span>
-                  </div>
+              <Card
+                key={farmer.id}
+                className="hover:shadow-lg transition-shadow overflow-hidden group"
+              >
+                {/* Farmer Image */}
+                <div className="relative h-40 sm:h-48 overflow-hidden">
+                  <img
+                    src={farmer.image || "/placeholder.svg"}
+                    alt={farmer.name}
+                    className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-300"
+                  />
+                  {farmer.verified && (
+                    <Badge className="absolute top-3 right-3 bg-accent text-accent-foreground gap-1">
+                      <ShieldCheck className="h-3 w-3" />
+                      Verified
+                    </Badge>
+                  )}
                 </div>
-              </CardHeader>
 
-              <CardContent className="space-y-3">
-                {farmer.products.map((product, idx) => (
-                  <div key={idx} className="border-t pt-3">
-                    <div className="flex items-start justify-between mb-2">
-                      <div>
-                        <p className="font-semibold text-foreground">
-                          {product.type}
-                        </p>
-                        <p className="text-xs text-muted-foreground">
-                          {product.breed}
-                        </p>
-                      </div>
-                      <div className="text-right">
-                        <p className="text-lg font-bold text-primary">
-                          ₹{product.price}/kg
-                        </p>
-                      </div>
+                <CardHeader className="pb-3">
+                  <div className="flex items-start justify-between">
+                    <div>
+                      <CardTitle className="text-lg">{farmer.name}</CardTitle>
+                      <p className="text-sm text-muted-foreground flex items-center gap-1 mt-1">
+                        <MapPin className="h-3 w-3" />
+                        {farmer.village} • {farmer.distance}
+                      </p>
                     </div>
-
-                    <div className="grid grid-cols-2 gap-2 text-xs text-muted-foreground mb-3">
-                      <div>
-                        <span className="font-medium">Weight:</span>{" "}
-                        {product.weightRangeMin + "-" + product.weightRangeMax + "kg"}
-                      </div>
-                      <div>
-                        <span className="font-medium">Age:</span> {product.age}
-                      </div>
-                      <div className="col-span-2 flex items-center gap-2">
-                        <span className="font-medium">Available:</span>{" "}
-                        <span className="text-primary font-semibold">
-                          {product.available} units
-                        </span>
-                        {product.bulkAvailable && (
-                          <Badge variant="secondary" className="text-xs gap-1 bg-blue-100 text-blue-800">
-                            <ChefHat className="h-3 w-3" />
-                            Bulk Available
-                          </Badge>
-                        )}
-                      </div>
-                    </div>
-
-                    <div className="flex gap-2">
-                      <Button
-                        size="sm"
-                        variant="outline"
-                        className="flex-1 gap-1 bg-transparent"
-                        onClick={() =>
-                          alert(
-                            `Viewing video for ${farmer.name}'s ${product.type}`
-                          )
-                        }
-                      >
-                        <Video className="h-4 w-4" />
-                        View Video
-                      </Button>
-                      <div className="flex-1 flex items-center justify-center gap-1">
-                        {(() => {
-                          const currentQuantity = getItemQuantity(
-                            farmer.id,
-                            product.type,
-                            product.breed
-                          );
-                          const canAdd = canAddItem(
-                            farmer.id,
-                            product.type,
-                            product.breed,
-                            product.available
-                          );
-                          const canIncrease =
-                            currentQuantity < product.available;
-                          const canDecrease = currentQuantity > 0;
-
-                          if (currentQuantity === 0) {
-                            return (
-                              <Button
-                                size="sm"
-                                className="w-full"
-                                disabled={!canAdd}
-                                onClick={() =>
-                                  addToCart(farmer as Farmer, product)
-                                }
-                              >
-                                <ShoppingCart className="h-4 w-4 mr-1" />
-                                {canAdd ? "Add to Cart" : "Out of Stock"}
-                              </Button>
-                            );
-                          }
-
-                          return (
-                            <div className="flex items-center gap-1 bg-primary/10 rounded-md p-1">
-                              <Button
-                                size="sm"
-                                variant="ghost"
-                                className="h-8 w-8 p-0 hover:bg-primary/20"
-                                disabled={!canDecrease}
-                                onClick={() =>
-                                  decreaseQuantity(
-                                    `${farmer.id}-${product.type}-${product.breed}`
-                                      .replace(/\s+/g, "-")
-                                      .toLowerCase()
-                                  )
-                                }
-                              >
-                                <Minus className="h-4 w-4" />
-                              </Button>
-                              <span className="w-8 text-center font-semibold text-sm">
-                                {currentQuantity}
-                              </span>
-                              <Button
-                                size="sm"
-                                variant="ghost"
-                                className="h-8 w-8 p-0 hover:bg-primary/20"
-                                disabled={!canIncrease}
-                                onClick={() =>
-                                  increaseQuantity(
-                                    `${farmer.id}-${product.type}-${product.breed}`
-                                      .replace(/\s+/g, "-")
-                                      .toLowerCase()
-                                  )
-                                }
-                              >
-                                <Plus className="h-4 w-4" />
-                              </Button>
-                            </div>
-                          );
-                        })()}
-                      </div>
+                    <div className="flex items-center gap-1 bg-primary/10 px-2 py-1 rounded-md">
+                      <Star className="h-4 w-4 fill-primary text-primary" />
+                      <span className="text-sm font-semibold">
+                        {farmer.rating}
+                      </span>
                     </div>
                   </div>
-                ))}
-              </CardContent>
-            </Card>
-          ))
-        )}
+                </CardHeader>
+
+                <CardContent className="space-y-3">
+                  {farmer.products.map((product, idx) => (
+                    <div key={idx} className="border-t pt-3">
+                      <div className="flex items-start justify-between mb-2">
+                        <div>
+                          <p className="font-semibold text-foreground">
+                            {product.type}
+                          </p>
+                          <p className="text-xs text-muted-foreground">
+                            {product.breed}
+                          </p>
+                        </div>
+                        <div className="text-right">
+                          <p className="text-lg font-bold text-primary">
+                            ₹{product.price}/kg
+                          </p>
+                        </div>
+                      </div>
+
+                      <div className="grid grid-cols-2 gap-2 text-xs text-muted-foreground mb-3">
+                        <div>
+                          <span className="font-medium">Weight:</span>{" "}
+                          {product.weightRangeMin +
+                            "-" +
+                            product.weightRangeMax +
+                            "kg"}
+                        </div>
+                        <div>
+                          <span className="font-medium">Age:</span>{" "}
+                          {product.age}
+                        </div>
+                        <div className="col-span-2 flex items-center gap-2">
+                          <span className="font-medium">Available:</span>{" "}
+                          <span className="text-primary font-semibold">
+                            {product.available} units
+                          </span>
+                          {product.bulkAvailable && (
+                            <Badge
+                              variant="secondary"
+                              className="text-xs gap-1 bg-blue-100 text-blue-800"
+                            >
+                              <ChefHat className="h-3 w-3" />
+                              Bulk Available
+                            </Badge>
+                          )}
+                        </div>
+                      </div>
+
+                      <div className="flex gap-2">
+                        <Button
+                          size="sm"
+                          variant="outline"
+                          className="flex-1 gap-1 bg-transparent"
+                          onClick={() =>
+                            alert(
+                              `Viewing video for ${farmer.name}'s ${product.type}`
+                            )
+                          }
+                        >
+                          <Video className="h-4 w-4" />
+                          View Video
+                        </Button>
+                        <div className="flex-1 flex items-center justify-center gap-1">
+                          {(() => {
+                            const currentQuantity = getItemQuantity(
+                              farmer.id,
+                              product.type,
+                              product.breed
+                            );
+                            const canAdd = canAddItem(
+                              farmer.id,
+                              product.type,
+                              product.breed,
+                              product.available
+                            );
+                            const canIncrease =
+                              currentQuantity < product.available;
+                            const canDecrease = currentQuantity > 0;
+
+                            if (currentQuantity === 0) {
+                              return (
+                                <Button
+                                  size="sm"
+                                  className="w-full"
+                                  disabled={!canAdd}
+                                  onClick={() =>
+                                    addToCart(farmer as Farmer, product)
+                                  }
+                                >
+                                  <ShoppingCart className="h-4 w-4 mr-1" />
+                                  {canAdd ? "Add to Cart" : "Out of Stock"}
+                                </Button>
+                              );
+                            }
+
+                            return (
+                              <div className="flex items-center gap-1 bg-primary/10 rounded-md p-1">
+                                <Button
+                                  size="sm"
+                                  variant="ghost"
+                                  className="h-8 w-8 p-0 hover:bg-primary/20"
+                                  disabled={!canDecrease}
+                                  onClick={() =>
+                                    decreaseQuantity(
+                                      `${farmer.id}-${product.type}-${product.breed}`
+                                        .replace(/\s+/g, "-")
+                                        .toLowerCase()
+                                    )
+                                  }
+                                >
+                                  <Minus className="h-4 w-4" />
+                                </Button>
+                                <span className="w-8 text-center font-semibold text-sm">
+                                  {currentQuantity}
+                                </span>
+                                <Button
+                                  size="sm"
+                                  variant="ghost"
+                                  className="h-8 w-8 p-0 hover:bg-primary/20"
+                                  disabled={!canIncrease}
+                                  onClick={() =>
+                                    increaseQuantity(
+                                      `${farmer.id}-${product.type}-${product.breed}`
+                                        .replace(/\s+/g, "-")
+                                        .toLowerCase()
+                                    )
+                                  }
+                                >
+                                  <Plus className="h-4 w-4" />
+                                </Button>
+                              </div>
+                            );
+                          })()}
+                        </div>
+                      </div>
+                    </div>
+                  ))}
+                </CardContent>
+              </Card>
+            ))
+          )}
         </div>
 
         {/* Bulk Order CTA */}
@@ -915,8 +992,6 @@ export default function CustomerPage() {
           </Card>
         )}
       </div>
-
-
-      </div>
+    </div>
   );
 }
