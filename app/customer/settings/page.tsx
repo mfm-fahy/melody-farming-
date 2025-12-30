@@ -226,7 +226,7 @@ export default function SettingsPage() {
                           ? "Employer dashboard active"
                           : employerPending
                           ? "KYC pending approval"
-                          : "Hire drivers and manage deliveries"}
+                          : "Post & schedule work requirements (events, catering, staff)"}
                       </p>
                     </div>
                   </div>

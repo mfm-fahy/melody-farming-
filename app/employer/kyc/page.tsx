@@ -1,20 +1,35 @@
-"use client"
+"use client";
 
-import type React from "react"
+import type React from "react";
 
-import { useState } from "react"
-import { useRouter } from "next/navigation"
-import { Button } from "@/components/ui/button"
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
-import { Input } from "@/components/ui/input"
-import { Label } from "@/components/ui/label"
-import { Progress } from "@/components/ui/progress"
-import { Building2, Upload, CheckCircle2, AlertCircle, Camera, FileText, User, Truck } from "lucide-react"
+import { useState } from "react";
+import { useRouter } from "next/navigation";
+import { Button } from "@/components/ui/button";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { Progress } from "@/components/ui/progress";
+import {
+  Building2,
+  Upload,
+  CheckCircle2,
+  AlertCircle,
+  Camera,
+  FileText,
+  User,
+  Truck,
+} from "lucide-react";
 
 export default function EmployerKYC() {
-  const router = useRouter()
-  const [step, setStep] = useState(1)
-  const [isSubmitting, setIsSubmitting] = useState(false)
+  const router = useRouter();
+  const [step, setStep] = useState(1);
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
   const [formData, setFormData] = useState({
     fullName: "",
@@ -31,30 +46,34 @@ export default function EmployerKYC() {
     businessDoc: null as File | null,
     bankDoc: null as File | null,
     selfie: null as File | null,
-  })
+  });
 
-  const totalSteps = 4
-  const progress = (step / totalSteps) * 100
+  const totalSteps = 4;
+  const progress = (step / totalSteps) * 100;
 
-  const handleFileUpload = (field: string) => (e: React.ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files?.[0]
-    if (file) {
-      setFormData({ ...formData, [field]: file })
-    }
-  }
+  const handleFileUpload =
+    (field: string) => (e: React.ChangeEvent<HTMLInputElement>) => {
+      const file = e.target.files?.[0];
+      if (file) {
+        setFormData({ ...formData, [field]: file });
+      }
+    };
 
   const handleSubmit = async () => {
-    setIsSubmitting(true)
+    setIsSubmitting(true);
     // Simulate KYC submission
-    await new Promise((resolve) => setTimeout(resolve, 2000))
+    await new Promise((resolve) => setTimeout(resolve, 2000));
 
     // Store KYC status
-    const user = JSON.parse(localStorage.getItem("melody_user") || "{}")
-    localStorage.setItem(`melody_kyc_employer_${user.phone}`, JSON.stringify({ status: "pending", ...formData }))
+    const user = JSON.parse(localStorage.getItem("melody_user") || "{}");
+    localStorage.setItem(
+      `melody_kyc_employer_${user.phone}`,
+      JSON.stringify({ status: "pending", ...formData })
+    );
 
-    setIsSubmitting(false)
-    router.push("/employer/kyc/pending")
-  }
+    setIsSubmitting(false);
+    router.push("/employer/kyc/pending");
+  };
 
   return (
     <div className="min-h-screen bg-gradient-to-b from-background to-muted/30 py-8">
@@ -67,8 +86,12 @@ export default function EmployerKYC() {
                 <Truck className="h-8 w-8 text-primary" />
               </div>
               <div>
-                <CardTitle className="text-2xl">Employer KYC Verification</CardTitle>
-                <CardDescription>Complete your profile to start hiring drivers on Melody</CardDescription>
+                <CardTitle className="text-2xl">
+                  Employer KYC Verification
+                </CardTitle>
+                <CardDescription>
+                  Complete your profile to start hiring for Catering workers
+                </CardDescription>
               </div>
             </div>
             <div className="space-y-2">
@@ -76,7 +99,9 @@ export default function EmployerKYC() {
                 <span className="font-medium">
                   Step {step} of {totalSteps}
                 </span>
-                <span className="text-muted-foreground">{Math.round(progress)}% Complete</span>
+                <span className="text-muted-foreground">
+                  {Math.round(progress)}% Complete
+                </span>
               </div>
               <Progress value={progress} className="h-2" />
             </div>
@@ -91,7 +116,9 @@ export default function EmployerKYC() {
                 <User className="h-5 w-5 text-primary" />
                 Personal & Business Information
               </CardTitle>
-              <CardDescription>Enter your basic details and business information</CardDescription>
+              <CardDescription>
+                Enter your basic details and business information
+              </CardDescription>
             </CardHeader>
             <CardContent className="space-y-4">
               <div className="space-y-2">
@@ -100,7 +127,9 @@ export default function EmployerKYC() {
                   id="fullName"
                   placeholder="Enter your full name"
                   value={formData.fullName}
-                  onChange={(e) => setFormData({ ...formData, fullName: e.target.value })}
+                  onChange={(e) =>
+                    setFormData({ ...formData, fullName: e.target.value })
+                  }
                 />
               </div>
 
@@ -110,7 +139,9 @@ export default function EmployerKYC() {
                   id="businessName"
                   placeholder="Enter your business name"
                   value={formData.businessName}
-                  onChange={(e) => setFormData({ ...formData, businessName: e.target.value })}
+                  onChange={(e) =>
+                    setFormData({ ...formData, businessName: e.target.value })
+                  }
                 />
               </div>
 
@@ -120,7 +151,9 @@ export default function EmployerKYC() {
                   id="businessType"
                   placeholder="e.g., Logistics, Transportation, Event Management"
                   value={formData.businessType}
-                  onChange={(e) => setFormData({ ...formData, businessType: e.target.value })}
+                  onChange={(e) =>
+                    setFormData({ ...formData, businessType: e.target.value })
+                  }
                 />
               </div>
 
@@ -144,7 +177,9 @@ export default function EmployerKYC() {
                 <FileText className="h-5 w-5 text-primary" />
                 Identity & Business Documents
               </CardTitle>
-              <CardDescription>Upload your personal and business documents</CardDescription>
+              <CardDescription>
+                Upload your personal and business documents
+              </CardDescription>
             </CardHeader>
             <CardContent className="space-y-6">
               <div className="space-y-4">
@@ -155,7 +190,12 @@ export default function EmployerKYC() {
                     placeholder="XXXX XXXX XXXX"
                     maxLength={12}
                     value={formData.aadhaar}
-                    onChange={(e) => setFormData({ ...formData, aadhaar: e.target.value.replace(/\D/g, "") })}
+                    onChange={(e) =>
+                      setFormData({
+                        ...formData,
+                        aadhaar: e.target.value.replace(/\D/g, ""),
+                      })
+                    }
                   />
                 </div>
 
@@ -173,12 +213,16 @@ export default function EmployerKYC() {
                       {formData.aadhaarDoc ? (
                         <div className="flex items-center justify-center gap-2 text-green-600">
                           <CheckCircle2 className="h-5 w-5" />
-                          <span className="font-medium">{formData.aadhaarDoc.name}</span>
+                          <span className="font-medium">
+                            {formData.aadhaarDoc.name}
+                          </span>
                         </div>
                       ) : (
                         <>
                           <Upload className="h-8 w-8 mx-auto mb-2 text-muted-foreground" />
-                          <p className="text-sm text-muted-foreground">Click to upload or drag and drop</p>
+                          <p className="text-sm text-muted-foreground">
+                            Click to upload or drag and drop
+                          </p>
                         </>
                       )}
                     </label>
@@ -194,7 +238,12 @@ export default function EmployerKYC() {
                     placeholder="ABCDE1234F"
                     maxLength={10}
                     value={formData.pan}
-                    onChange={(e) => setFormData({ ...formData, pan: e.target.value.toUpperCase() })}
+                    onChange={(e) =>
+                      setFormData({
+                        ...formData,
+                        pan: e.target.value.toUpperCase(),
+                      })
+                    }
                   />
                 </div>
 
@@ -212,12 +261,16 @@ export default function EmployerKYC() {
                       {formData.panDoc ? (
                         <div className="flex items-center justify-center gap-2 text-green-600">
                           <CheckCircle2 className="h-5 w-5" />
-                          <span className="font-medium">{formData.panDoc.name}</span>
+                          <span className="font-medium">
+                            {formData.panDoc.name}
+                          </span>
                         </div>
                       ) : (
                         <>
                           <Upload className="h-8 w-8 mx-auto mb-2 text-muted-foreground" />
-                          <p className="text-sm text-muted-foreground">Click to upload or drag and drop</p>
+                          <p className="text-sm text-muted-foreground">
+                            Click to upload or drag and drop
+                          </p>
                         </>
                       )}
                     </label>
@@ -233,7 +286,12 @@ export default function EmployerKYC() {
                     placeholder="22AAAAA0000A1Z5"
                     maxLength={15}
                     value={formData.gst}
-                    onChange={(e) => setFormData({ ...formData, gst: e.target.value.toUpperCase() })}
+                    onChange={(e) =>
+                      setFormData({
+                        ...formData,
+                        gst: e.target.value.toUpperCase(),
+                      })
+                    }
                   />
                 </div>
 
@@ -251,12 +309,16 @@ export default function EmployerKYC() {
                       {formData.gstDoc ? (
                         <div className="flex items-center justify-center gap-2 text-green-600">
                           <CheckCircle2 className="h-5 w-5" />
-                          <span className="font-medium">{formData.gstDoc.name}</span>
+                          <span className="font-medium">
+                            {formData.gstDoc.name}
+                          </span>
                         </div>
                       ) : (
                         <>
                           <Upload className="h-8 w-8 mx-auto mb-2 text-muted-foreground" />
-                          <p className="text-sm text-muted-foreground">Click to upload or drag and drop</p>
+                          <p className="text-sm text-muted-foreground">
+                            Click to upload or drag and drop
+                          </p>
                         </>
                       )}
                     </label>
@@ -265,12 +327,21 @@ export default function EmployerKYC() {
               </div>
 
               <div className="flex gap-3">
-                <Button onClick={() => setStep(1)} variant="outline" className="flex-1 bg-transparent">
+                <Button
+                  onClick={() => setStep(1)}
+                  variant="outline"
+                  className="flex-1 bg-transparent"
+                >
                   Back
                 </Button>
                 <Button
                   onClick={() => setStep(3)}
-                  disabled={!formData.aadhaar || !formData.pan || !formData.aadhaarDoc || !formData.panDoc}
+                  disabled={
+                    !formData.aadhaar ||
+                    !formData.pan ||
+                    !formData.aadhaarDoc ||
+                    !formData.panDoc
+                  }
                   className="flex-1"
                   size="lg"
                 >
@@ -289,7 +360,9 @@ export default function EmployerKYC() {
                 <Building2 className="h-5 w-5 text-primary" />
                 Business Documents & Bank Details
               </CardTitle>
-              <CardDescription>Upload business registration and bank details</CardDescription>
+              <CardDescription>
+                Upload business registration and bank details
+              </CardDescription>
             </CardHeader>
             <CardContent className="space-y-4">
               <div className="space-y-2">
@@ -306,12 +379,16 @@ export default function EmployerKYC() {
                     {formData.businessDoc ? (
                       <div className="flex items-center justify-center gap-2 text-green-600">
                         <CheckCircle2 className="h-5 w-5" />
-                        <span className="font-medium">{formData.businessDoc.name}</span>
+                        <span className="font-medium">
+                          {formData.businessDoc.name}
+                        </span>
                       </div>
                     ) : (
                       <>
                         <Upload className="h-8 w-8 mx-auto mb-2 text-muted-foreground" />
-                        <p className="text-sm text-muted-foreground">Click to upload or drag and drop</p>
+                        <p className="text-sm text-muted-foreground">
+                          Click to upload or drag and drop
+                        </p>
                       </>
                     )}
                   </label>
@@ -325,7 +402,9 @@ export default function EmployerKYC() {
                     id="bankAccount"
                     placeholder="Enter account number"
                     value={formData.bankAccount}
-                    onChange={(e) => setFormData({ ...formData, bankAccount: e.target.value })}
+                    onChange={(e) =>
+                      setFormData({ ...formData, bankAccount: e.target.value })
+                    }
                   />
                 </div>
 
@@ -336,7 +415,12 @@ export default function EmployerKYC() {
                     placeholder="SBIN0001234"
                     maxLength={11}
                     value={formData.ifsc}
-                    onChange={(e) => setFormData({ ...formData, ifsc: e.target.value.toUpperCase() })}
+                    onChange={(e) =>
+                      setFormData({
+                        ...formData,
+                        ifsc: e.target.value.toUpperCase(),
+                      })
+                    }
                   />
                 </div>
 
@@ -354,12 +438,16 @@ export default function EmployerKYC() {
                       {formData.bankDoc ? (
                         <div className="flex items-center justify-center gap-2 text-green-600">
                           <CheckCircle2 className="h-5 w-5" />
-                          <span className="font-medium">{formData.bankDoc.name}</span>
+                          <span className="font-medium">
+                            {formData.bankDoc.name}
+                          </span>
                         </div>
                       ) : (
                         <>
                           <Upload className="h-8 w-8 mx-auto mb-2 text-muted-foreground" />
-                          <p className="text-sm text-muted-foreground">Click to upload or drag and drop</p>
+                          <p className="text-sm text-muted-foreground">
+                            Click to upload or drag and drop
+                          </p>
                         </>
                       )}
                     </label>
@@ -371,21 +459,33 @@ export default function EmployerKYC() {
                 <div className="flex gap-3">
                   <AlertCircle className="h-5 w-5 text-blue-600 flex-shrink-0 mt-0.5" />
                   <div>
-                    <p className="text-sm font-medium text-blue-900">Secure Payment Processing</p>
+                    <p className="text-sm font-medium text-blue-900">
+                      Secure Payment Processing
+                    </p>
                     <p className="text-xs text-blue-800 mt-1">
-                      Your payments for driver services will be processed securely through this account
+                      Your payments for driver services will be processed
+                      securely through this account
                     </p>
                   </div>
                 </div>
               </div>
 
               <div className="flex gap-3">
-                <Button onClick={() => setStep(2)} variant="outline" className="flex-1 bg-transparent">
+                <Button
+                  onClick={() => setStep(2)}
+                  variant="outline"
+                  className="flex-1 bg-transparent"
+                >
                   Back
                 </Button>
                 <Button
                   onClick={() => setStep(4)}
-                  disabled={!formData.businessDoc || !formData.bankAccount || !formData.ifsc || !formData.bankDoc}
+                  disabled={
+                    !formData.businessDoc ||
+                    !formData.bankAccount ||
+                    !formData.ifsc ||
+                    !formData.bankDoc
+                  }
                   className="flex-1"
                   size="lg"
                 >
@@ -404,7 +504,9 @@ export default function EmployerKYC() {
                 <Camera className="h-5 w-5 text-primary" />
                 Selfie Verification
               </CardTitle>
-              <CardDescription>Upload a clear selfie holding your Aadhaar card</CardDescription>
+              <CardDescription>
+                Upload a clear selfie holding your Aadhaar card
+              </CardDescription>
             </CardHeader>
             <CardContent className="space-y-6">
               <div className="space-y-2">
@@ -421,13 +523,19 @@ export default function EmployerKYC() {
                     {formData.selfie ? (
                       <div className="space-y-3">
                         <CheckCircle2 className="h-12 w-12 mx-auto text-green-600" />
-                        <p className="font-medium text-green-700">{formData.selfie.name}</p>
-                        <p className="text-xs text-muted-foreground">Selfie uploaded successfully</p>
+                        <p className="font-medium text-green-700">
+                          {formData.selfie.name}
+                        </p>
+                        <p className="text-xs text-muted-foreground">
+                          Selfie uploaded successfully
+                        </p>
                       </div>
                     ) : (
                       <>
                         <Camera className="h-16 w-16 mx-auto mb-4 text-muted-foreground" />
-                        <p className="text-sm font-medium mb-2">Click to upload selfie</p>
+                        <p className="text-sm font-medium mb-2">
+                          Click to upload selfie
+                        </p>
                         <p className="text-xs text-muted-foreground">
                           Make sure your face and Aadhaar are clearly visible
                         </p>
@@ -441,7 +549,9 @@ export default function EmployerKYC() {
                 <div className="flex gap-3">
                   <AlertCircle className="h-5 w-5 text-yellow-600 flex-shrink-0 mt-0.5" />
                   <div>
-                    <p className="text-sm font-medium text-yellow-900">Verification Guidelines</p>
+                    <p className="text-sm font-medium text-yellow-900">
+                      Verification Guidelines
+                    </p>
                     <ul className="text-xs text-yellow-800 mt-2 space-y-1">
                       <li>• Hold your Aadhaar card near your face</li>
                       <li>• Ensure good lighting and clear image</li>
@@ -453,7 +563,11 @@ export default function EmployerKYC() {
               </div>
 
               <div className="flex gap-3">
-                <Button onClick={() => setStep(3)} variant="outline" className="flex-1 bg-transparent">
+                <Button
+                  onClick={() => setStep(3)}
+                  variant="outline"
+                  className="flex-1 bg-transparent"
+                >
                   Back
                 </Button>
                 <Button
@@ -470,5 +584,5 @@ export default function EmployerKYC() {
         )}
       </div>
     </div>
-  )
+  );
 }
