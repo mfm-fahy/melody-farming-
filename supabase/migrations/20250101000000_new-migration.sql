@@ -1,0 +1,2 @@
+-- New migration: new-migration
+-- Add your SQL changes here

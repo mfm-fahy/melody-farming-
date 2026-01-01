@@ -29,7 +29,7 @@ export default function AdminServicesPage() {
     setWorkers(
       JSON.parse(localStorage.getItem("melody_services_workers") || "[]")
     );
-  }, []);
+  }, [router]);
 
   const toggleStudent = (id: string) => {
     const updated = students.map((s) =>

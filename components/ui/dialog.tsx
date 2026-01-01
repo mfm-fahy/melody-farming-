@@ -45,6 +45,8 @@ const DialogOverlay = React.forwardRef<
   />
 ));
 
+DialogOverlay.displayName = "DialogOverlay";
+
 function DialogContent({
   className,
   children,

@@ -76,12 +76,84 @@ export default function CartPage() {
     }
   };
 
-  const [orderId] = useState(() => `ORD-${Math.floor(Math.random() * 10000)}`);
+  const [orderId, setOrderId] = useState(
+    () => `ORD-${Math.floor(Math.random() * 10000)}`
+  );
 
-  const handlePaymentSuccess = (paymentId: string) => {
+  const handlePaymentSuccess = async (paymentId: string) => {
     console.log("[v0] Payment successful:", paymentId);
-    setShowPaymentModal(false);
-    setStep("confirmation");
+
+    try {
+      // Get current user from localStorage (demo auth)
+      const currentUser = localStorage.getItem("melody_current_user");
+      if (!currentUser) {
+        alert("User not authenticated. Please login again.");
+        router.push("/auth");
+        return;
+      }
+
+      const user = JSON.parse(currentUser);
+      const customerId = user.phone; // Using phone as customer ID for demo
+
+      // Prepare order data
+      const deliveryAddressString = `${address.fullAddress}${
+        address.landmark ? `, Landmark: ${address.landmark}` : ""
+      }${
+        address.deliveryInstructions
+          ? `, Instructions: ${address.deliveryInstructions}`
+          : ""
+      }`;
+
+      const orderData = {
+        customerId,
+        items: cartItems.map((item) => ({
+          farmerId: item.farmer_id,
+          productType: item.product_type,
+          breed: item.breed,
+          quantity: item.quantity,
+          price: item.price_per_unit,
+          weight: item.weight,
+          minimumGuaranteedWeight: item.minimum_guaranteed_weight,
+        })),
+        totalAmount: subtotal,
+        deliveryAddress: deliveryAddressString,
+        paymentMethod,
+        paymentId,
+        deliveryFee,
+        gst,
+      };
+
+      // Create order in database
+      const response = await fetch("/api/orders", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(orderData),
+      });
+
+      if (!response.ok) {
+        throw new Error("Failed to create order");
+      }
+
+      const result = await response.json();
+      console.log("Order created:", result);
+
+      // Clear cart after successful order
+      clearCart();
+
+      // Update orderId for confirmation screen
+      setOrderId(result.orderId);
+
+      setShowPaymentModal(false);
+      setStep("confirmation");
+    } catch (error) {
+      console.error("Order creation failed:", error);
+      alert(
+        "Payment successful but order creation failed. Please contact support."
+      );
+      setShowPaymentModal(false);
+    }
   };
 
   if (step === "confirmation") {
@@ -94,9 +166,7 @@ export default function CartPage() {
             </div>
             <div>
               <h2 className="text-2xl font-bold mb-2">Order Confirmed!</h2>
-              <p className="text-muted-foreground">
-                Order ID: {orderId}
-              </p>
+              <p className="text-muted-foreground">Order ID: {orderId}</p>
             </div>
             <div className="bg-muted/50 rounded-lg p-4 text-left space-y-2">
               <div className="flex justify-between">
@@ -116,7 +186,8 @@ export default function CartPage() {
             </div>
             <div className="bg-blue-50 border border-blue-200 rounded-lg p-3">
               <p className="text-sm text-blue-800 font-medium">
-                Live animal weight may vary naturally. You were charged only for the minimum guaranteed weight.
+                Live animal weight may vary naturally. You were charged only for
+                the minimum guaranteed weight.
               </p>
             </div>
             <div className="bg-blue-500/10 border border-blue-500/30 rounded-lg p-4 text-left">
@@ -205,7 +276,7 @@ export default function CartPage() {
                       <CardContent className="p-4">
                         <div className="flex items-start gap-4">
                           <div className="flex-1">
-                            <p className="font-bold">{item.productType}</p>
+                            <p className="font-bold">{item.product_type}</p>
                             <p className="text-sm text-muted-foreground">
                               {item.breed}
                             </p>
@@ -218,9 +289,14 @@ export default function CartPage() {
                               </span>
                               <span className="font-medium">{item.weight}</span>
                             </div>
-                            {item.minimumGuaranteedWeight && (
+                            {item.minimum_guaranteed_weight && (
                               <div className="mt-1">
-                                <p className="text-xs text-muted-foreground">Minimum guaranteed weight: <span className="font-medium">{item.minimumGuaranteedWeight}kg</span></p>
+                                <p className="text-xs text-muted-foreground">
+                                  Minimum guaranteed weight:{" "}
+                                  <span className="font-medium">
+                                    {item.minimum_guaranteed_weight}kg
+                                  </span>
+                                </p>
                               </div>
                             )}
                             <div className="flex items-center gap-2 mt-1">
@@ -235,7 +311,10 @@ export default function CartPage() {
 
                           <div className="text-right space-y-3">
                             <p className="text-lg font-bold text-primary">
-                              ₹{(item.price * item.quantity).toLocaleString()}
+                              ₹
+                              {(
+                                item.price_per_unit * item.quantity
+                              ).toLocaleString()}
                             </p>
 
                             <div className="flex items-center gap-2">
@@ -255,7 +334,9 @@ export default function CartPage() {
                                 size="icon"
                                 variant="outline"
                                 className="h-8 w-8 bg-transparent"
-                                disabled={item.quantity >= item.available}
+                                disabled={
+                                  item.quantity >= (item.available || 10)
+                                }
                                 onClick={() => increaseQuantity(item.id)}
                               >
                                 <Plus className="h-4 w-4" />
@@ -466,7 +547,8 @@ export default function CartPage() {
                 </div>
                 <div className="bg-blue-50 border border-blue-200 rounded-lg p-3">
                   <p className="text-sm text-blue-800 font-medium">
-                    Live animal weight may vary naturally. You will be charged only for the minimum guaranteed weight.
+                    Live animal weight may vary naturally. You will be charged
+                    only for the minimum guaranteed weight.
                   </p>
                 </div>
               </CardContent>

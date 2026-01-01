@@ -41,7 +41,7 @@ export default function SettingsPage() {
     } else {
       router.push("/auth");
     }
-  }, []);
+  }, [router]);
 
   const handleLogout = () => {
     localStorage.removeItem("melody_current_user");

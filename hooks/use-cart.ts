@@ -1,158 +1,256 @@
 "use client";
 
 import { useState, useEffect, useCallback } from "react";
-import {
-  CartItem,
-  generateCartItemId,
-  canAddToCart,
-  validateCartItemQuantity,
-  getTotalCartItems,
-  getCartSubtotal,
-  createCartItemFromProduct,
-} from "@/lib/cart-utils";
-import { Farmer, Product } from "@/lib/cart-utils";
 
-const CART_STORAGE_KEY = "melody-cart";
+interface CartItem {
+  id: string;
+  customer_id: string;
+  farmer_id: string;
+  product_type: string;
+  breed: string;
+  quantity: number;
+  price_per_unit: number;
+  weight: string | null;
+  minimum_guaranteed_weight: number | null;
+  farmer: {
+    name: string;
+    village: string;
+    phone: string;
+    is_verified: boolean;
+  };
+  farmerName?: string;
+  farmerVillage?: string;
+  available?: number;
+}
 
-export const useCart = () => {
+interface CartSummary {
+  subtotal: number;
+  itemCount: number;
+}
+
+export function useCart() {
   const [cartItems, setCartItems] = useState<CartItem[]>([]);
-  const [isLoaded, setIsLoaded] = useState(false);
+  const [loading, setLoading] = useState(true);
+  const [customerId, setCustomerId] = useState<string | null>(null);
 
-  // Load cart from localStorage on mount
+  // Get customer ID from localStorage (demo auth)
   useEffect(() => {
-    try {
-      const stored = localStorage.getItem(CART_STORAGE_KEY);
-      if (stored) {
-        const parsedItems = JSON.parse(stored) as CartItem[];
-        // Validate quantities against available stock on load
-        const validatedItems = parsedItems.map(validateCartItemQuantity);
-        setCartItems(validatedItems);
-      }
-    } catch (error) {
-      console.error("Error loading cart from localStorage:", error);
-    } finally {
-      setIsLoaded(true);
+    const currentUser = localStorage.getItem("melody_current_user");
+    if (currentUser) {
+      const user = JSON.parse(currentUser);
+      setCustomerId(user.phone);
     }
   }, []);
 
-  // Save cart to localStorage whenever it changes
-  useEffect(() => {
-    if (isLoaded) {
-      try {
-        localStorage.setItem(CART_STORAGE_KEY, JSON.stringify(cartItems));
-      } catch (error) {
-        console.error("Error saving cart to localStorage:", error);
+  // Fetch cart items from database
+  const fetchCart = useCallback(async () => {
+    if (!customerId) return;
+
+    try {
+      setLoading(true);
+      const response = await fetch(`/api/cart?customerId=${customerId}`);
+      if (response.ok) {
+        const data = await response.json();
+        const items = data.cart.map((item: any) => ({
+          ...item,
+          price: item.price_per_unit, // Map price_per_unit to price for cart display
+          farmerName: "Farmer", // Default name since we removed the join
+          farmerVillage: "Village", // Default village since we removed the join
+          available: 10, // Default availability, could be fetched from farmer_stock
+        }));
+        setCartItems(items);
       }
+    } catch (error) {
+      console.error("Failed to fetch cart:", error);
+    } finally {
+      setLoading(false);
     }
-  }, [cartItems, isLoaded]);
+  }, [customerId]);
+
+  // Load cart on mount and when customerId changes
+  useEffect(() => {
+    if (customerId) {
+      fetchCart();
+    }
+  }, [customerId, fetchCart]);
 
   // Add item to cart
   const addToCart = useCallback(
-    (farmer: Farmer, product: Product, quantity: number = 1) => {
-      const cartItemId = generateCartItemId(
-        farmer.id,
-        product.type,
-        product.breed
-      );
-      const existingItem = cartItems.find((item) => item.id === cartItemId);
+    async (item: {
+      farmerId: string;
+      productType: string;
+      breed?: string;
+      quantity?: number;
+      price: number;
+      weight?: string;
+      minimumGuaranteedWeight?: number;
+    }) => {
+      if (!customerId) return;
 
-      if (existingItem) {
-        // Item already in cart, increase quantity if possible
-        if (
-          canAddToCart(existingItem.quantity, existingItem.available, quantity)
-        ) {
-          setCartItems((prevItems) =>
-            prevItems.map((item) =>
-              item.id === cartItemId
-                ? { ...item, quantity: item.quantity + quantity }
-                : item
-            )
-          );
-          return true;
-        } else {
-          // Cannot add more due to stock limit
-          return false;
+      try {
+        const response = await fetch("/api/cart", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            customerId,
+            farmerId: item.farmerId,
+            productType: item.productType,
+            breed: item.breed,
+            quantity: item.quantity || 1,
+            price: item.price,
+            weight: item.weight,
+            minimumGuaranteedWeight: item.minimumGuaranteedWeight,
+          }),
+        });
+
+        if (response.ok) {
+          await fetchCart(); // Refresh cart
         }
-      } else {
-        // New item, add to cart
-        if (quantity <= product.available) {
-          const newCartItem = createCartItemFromProduct(
-            farmer,
-            product,
-            quantity
-          );
-          setCartItems((prevItems) => [...prevItems, newCartItem]);
-          return true;
-        } else {
-          return false;
-        }
+      } catch (error) {
+        console.error("Failed to add to cart:", error);
       }
     },
-    [cartItems]
+    [customerId, fetchCart]
   );
 
   // Remove item from cart
-  const removeFromCart = useCallback((cartItemId: string) => {
-    setCartItems((prevItems) =>
-      prevItems.filter((item) => item.id !== cartItemId)
-    );
-  }, []);
+  const removeFromCart = useCallback(
+    async (itemId: string) => {
+      if (!customerId) return;
+
+      try {
+        const response = await fetch(
+          `/api/cart?customerId=${customerId}&itemId=${itemId}`,
+          {
+            method: "DELETE",
+          }
+        );
+
+        if (response.ok) {
+          await fetchCart(); // Refresh cart
+        }
+      } catch (error) {
+        console.error("Failed to remove from cart:", error);
+      }
+    },
+    [customerId, fetchCart]
+  );
 
   // Update item quantity
   const updateQuantity = useCallback(
-    (cartItemId: string, newQuantity: number) => {
-      if (newQuantity <= 0) {
-        removeFromCart(cartItemId);
-        return;
-      }
+    async (itemId: string, quantity: number) => {
+      if (!customerId || quantity < 1) return;
 
-      setCartItems((prevItems) =>
-        prevItems.map((item) => {
-          if (item.id === cartItemId) {
-            const validatedQuantity = Math.min(newQuantity, item.available);
-            return { ...item, quantity: validatedQuantity };
-          }
-          return item;
-        })
-      );
+      try {
+        const response = await fetch("/api/cart", {
+          method: "PATCH",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            customerId,
+            itemId,
+            quantity,
+          }),
+        });
+
+        if (response.ok) {
+          await fetchCart(); // Refresh cart
+        }
+      } catch (error) {
+        console.error("Failed to update cart quantity:", error);
+      }
     },
-    [removeFromCart]
+    [customerId, fetchCart]
   );
 
-  // Increase quantity by 1
+  // Increase quantity
   const increaseQuantity = useCallback(
-    (cartItemId: string) => {
-      const item = cartItems.find((item) => item.id === cartItemId);
-      if (item && item.quantity < item.available) {
-        updateQuantity(cartItemId, item.quantity + 1);
+    (itemId: string) => {
+      const item = cartItems.find((item) => item.id === itemId);
+      if (item) {
+        updateQuantity(itemId, item.quantity + 1);
       }
     },
     [cartItems, updateQuantity]
   );
 
-  // Decrease quantity by 1
+  // Decrease quantity
   const decreaseQuantity = useCallback(
-    (cartItemId: string) => {
-      const item = cartItems.find((item) => item.id === cartItemId);
+    (itemId: string) => {
+      const item = cartItems.find((item) => item.id === itemId);
       if (item && item.quantity > 1) {
-        updateQuantity(cartItemId, item.quantity - 1);
-      } else if (item && item.quantity === 1) {
-        removeFromCart(cartItemId);
+        updateQuantity(itemId, item.quantity - 1);
       }
     },
-    [cartItems, updateQuantity, removeFromCart]
+    [cartItems, updateQuantity]
+  );
+
+  // Get cart item by product details (for customer page)
+  const getCartItemByProduct = useCallback(
+    (farmerId: string, productType: string, breed: string) => {
+      return cartItems.find(
+        (item) =>
+          item.farmer_id === farmerId &&
+          item.product_type === productType &&
+          item.breed === breed
+      );
+    },
+    [cartItems]
+  );
+
+  // Increase quantity by product details
+  const increaseQuantityByProduct = useCallback(
+    (farmerId: string, productType: string, breed: string) => {
+      const item = getCartItemByProduct(farmerId, productType, breed);
+      if (item) {
+        updateQuantity(item.id, item.quantity + 1);
+      }
+    },
+    [getCartItemByProduct, updateQuantity]
+  );
+
+  // Decrease quantity by product details
+  const decreaseQuantityByProduct = useCallback(
+    (farmerId: string, productType: string, breed: string) => {
+      const item = getCartItemByProduct(farmerId, productType, breed);
+      if (item && item.quantity > 1) {
+        updateQuantity(item.id, item.quantity - 1);
+      }
+    },
+    [getCartItemByProduct, updateQuantity]
   );
 
   // Clear cart
-  const clearCart = useCallback(() => {
-    setCartItems([]);
-  }, []);
+  const clearCart = useCallback(async () => {
+    if (!customerId) return;
+
+    try {
+      // Delete all items for this customer
+      const deletePromises = cartItems.map((item) =>
+        fetch(`/api/cart?customerId=${customerId}&itemId=${item.id}`, {
+          method: "DELETE",
+        })
+      );
+
+      await Promise.all(deletePromises);
+      setCartItems([]);
+    } catch (error) {
+      console.error("Failed to clear cart:", error);
+    }
+  }, [customerId, cartItems]);
 
   // Get item quantity in cart
   const getItemQuantity = useCallback(
-    (farmerId: number, productType: string, breed: string) => {
-      const cartItemId = generateCartItemId(farmerId, productType, breed);
-      const item = cartItems.find((item) => item.id === cartItemId);
+    (farmerId: string, productType: string, breed: string) => {
+      const item = cartItems.find(
+        (item) =>
+          item.farmer_id === farmerId &&
+          item.product_type === productType &&
+          item.breed === breed
+      );
       return item?.quantity || 0;
     },
     [cartItems]
@@ -161,36 +259,39 @@ export const useCart = () => {
   // Check if item can be added to cart
   const canAddItem = useCallback(
     (
-      farmerId: number,
+      farmerId: string,
       productType: string,
       breed: string,
-      available: number,
-      addQuantity: number = 1
+      available: number
     ) => {
       const currentQuantity = getItemQuantity(farmerId, productType, breed);
-      return canAddToCart(currentQuantity, available, addQuantity);
+      return currentQuantity < available;
     },
     [getItemQuantity]
   );
 
-  // Get cart summary
-  const cartSummary = {
-    totalItems: getTotalCartItems(cartItems),
-    subtotal: getCartSubtotal(cartItems),
-    itemCount: cartItems.length,
+  // Calculate cart summary
+  const cartSummary: CartSummary = {
+    subtotal: cartItems.reduce(
+      (sum, item) => sum + item.price_per_unit * item.quantity,
+      0
+    ),
+    itemCount: cartItems.reduce((sum, item) => sum + item.quantity, 0),
   };
 
   return {
     cartItems,
-    isLoaded,
+    loading,
     addToCart,
     removeFromCart,
-    updateQuantity,
     increaseQuantity,
     decreaseQuantity,
+    increaseQuantityByProduct,
+    decreaseQuantityByProduct,
+    updateQuantity,
     clearCart,
     getItemQuantity,
     canAddItem,
     cartSummary,
   };
-};
+}

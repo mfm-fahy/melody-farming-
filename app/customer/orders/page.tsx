@@ -1,5 +1,7 @@
 "use client";
 
+import { useState, useEffect } from "react";
+import { useRouter } from "next/navigation";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
@@ -16,55 +18,71 @@ import {
 import Link from "next/link";
 
 export default function OrdersPage() {
-  const activeOrders = [
-    {
-      id: "ORD-2401",
-      farmer: "Raju Goats Chevella",
-      product: "Goat - 24-26kg",
-      amount: 18750,
-      status: "in_transit",
-      date: "2025-12-24",
-      time: "11:00 AM",
-      eta: "12 mins",
-      canComplain: true,
-    },
-    {
-      id: "ORD-2398",
-      farmer: "Krishna Dairy, Moinabad",
-      product: "Fresh Milk - 10L",
-      amount: 650,
-      status: "preparing",
-      date: "2025-12-24",
-      time: "10:30 AM",
-      eta: "45 mins",
-      canComplain: false,
-    },
-  ];
+  const router = useRouter();
+  const [user, setUser] = useState<any>(null);
+  const [orders, setOrders] = useState<any[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+  useEffect(() => {
+    const fetchOrders = async () => {
+      try {
+        setLoading(true);
+        setError(null);
 
-  const completedOrders = [
-    {
-      id: "ORD-2395",
-      farmer: "Lakshmi Farms, Shankarpally",
-      product: "Desi Chicken - 3kg",
-      amount: 3780,
-      status: "delivered",
-      date: "2025-12-23",
-      time: "08:30 AM",
-      deliveredAt: "09:15 AM",
-      canComplain: false,
-    },
-    {
-      id: "ORD-2392",
-      farmer: "Srinivas Organic, Vikarabad",
-      product: "Mixed Vegetables - 5kg",
-      amount: 225,
-      status: "delivered",
-      date: "2025-12-22",
-      time: "07:00 AM",
-      deliveredAt: "08:00 AM",
-      canComplain: false,
-    },
-  ];
+        const userData = localStorage.getItem("melody_current_user");
+        if (!userData) {
+          router.push("/auth");
+          return;
+        }
+
+        let parsed;
+        try {
+          parsed = JSON.parse(userData);
+        } catch (error) {
+          setError("Invalid user data. Please log in again.");
+          router.push("/auth");
+          return;
+        }
+
+        if (!parsed || !parsed.phone) {
+          setError("Invalid user data. Please log in again.");
+          router.push("/auth");
+          return;
+        }
+        setUser(parsed);
+
+        // Fetch orders from API
+        const response = await fetch(`/api/orders?customerId=${parsed.phone}`);
+        if (!response.ok) {
+          const errorData = await response.json();
+          throw new Error(
+            `Failed to fetch orders: ${errorData.error} - ${
+              errorData.details ? JSON.stringify(errorData.details) : ""
+            }`
+          );
+        }
+
+        const data = await response.json();
+        setOrders(data.orders || []);
+      } catch (err) {
+        console.error("Error fetching orders:", err);
+        setError(err instanceof Error ? err.message : "Failed to load orders");
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchOrders();
+  }, [router]);
+
+  // Separate orders into active and completed
+  const activeOrders = orders.filter((order) =>
+    ["pending", "confirmed", "preparing", "in_transit"].includes(order.status)
+  );
+
+  const completedOrders = orders.filter((order) =>
+    ["delivered", "cancelled"].includes(order.status)
+  );
 
   const getStatusBadge = (status: string) => {
     switch (status) {
@@ -82,6 +100,20 @@ export default function OrdersPage() {
             Preparing
           </Badge>
         );
+      case "pending":
+        return (
+          <Badge className="bg-gray-500/10 text-gray-700 border-gray-500/20">
+            <Clock className="h-3 w-3 mr-1" />
+            Pending
+          </Badge>
+        );
+      case "confirmed":
+        return (
+          <Badge className="bg-green-500/10 text-green-700 border-green-500/20">
+            <CheckCircle2 className="h-3 w-3 mr-1" />
+            Confirmed
+          </Badge>
+        );
       case "delivered":
         return (
           <Badge className="bg-green-500/10 text-green-700 border-green-500/20">
@@ -89,10 +121,55 @@ export default function OrdersPage() {
             Delivered
           </Badge>
         );
+      case "cancelled":
+        return (
+          <Badge className="bg-red-500/10 text-red-700 border-red-500/20">
+            <AlertTriangle className="h-3 w-3 mr-1" />
+            Cancelled
+          </Badge>
+        );
       default:
-        return null;
+        return (
+          <Badge className="bg-gray-500/10 text-gray-700 border-gray-500/20">
+            {status}
+          </Badge>
+        );
     }
   };
+
+  const formatDate = (dateString: string) => {
+    return new Date(dateString).toLocaleDateString("en-IN", {
+      year: "numeric",
+      month: "short",
+      day: "numeric",
+    });
+  };
+
+  const formatTime = (dateString: string) => {
+    return new Date(dateString).toLocaleTimeString("en-IN", {
+      hour: "2-digit",
+      minute: "2-digit",
+    });
+  };
+
+  if (loading) {
+    return (
+      <div className="min-h-screen flex items-center justify-center">
+        <div className="animate-spin h-8 w-8 border-4 border-primary border-t-transparent rounded-full" />
+      </div>
+    );
+  }
+
+  if (error) {
+    return (
+      <div className="min-h-screen flex items-center justify-center">
+        <div className="text-center">
+          <p className="text-red-600 mb-4">{error}</p>
+          <Button onClick={() => window.location.reload()}>Try Again</Button>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-screen bg-background">
@@ -162,7 +239,8 @@ export default function OrdersPage() {
                       <div>
                         <CardTitle className="text-base">{order.id}</CardTitle>
                         <p className="text-sm text-muted-foreground mt-1">
-                          {order.date} • {order.time}
+                          {formatDate(order.created_at)} •{" "}
+                          {formatTime(order.created_at)}
                         </p>
                       </div>
                       {getStatusBadge(order.status)}
@@ -170,10 +248,18 @@ export default function OrdersPage() {
                   </CardHeader>
                   <CardContent className="pt-4 space-y-4">
                     <div className="space-y-2">
-                      <p className="font-semibold">{order.product}</p>
-                      <p className="text-sm text-muted-foreground">
-                        {order.farmer}
-                      </p>
+                      {order.order_items?.map((item: any, idx: number) => (
+                        <div key={idx}>
+                          <p className="font-semibold">
+                            {item.product_type} ({item.quantity}{" "}
+                            {item.weight ? `${item.weight}kg` : "units"})
+                          </p>
+                          <p className="text-sm text-muted-foreground">
+                            {item.farmer?.name ||
+                              `Farmer ID: ${item.farmer_id}`}
+                          </p>
+                        </div>
+                      ))}
                     </div>
 
                     <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 p-3 bg-muted/50 rounded-lg">
@@ -182,13 +268,18 @@ export default function OrdersPage() {
                           Order Amount
                         </p>
                         <p className="text-lg font-bold text-primary">
-                          ₹{order.amount.toLocaleString()}
+                          ₹
+                          {(
+                            order.total_amount +
+                            order.delivery_fee +
+                            order.gst
+                          ).toLocaleString()}
                         </p>
                       </div>
-                      {order.eta && (
+                      {order.status === "in_transit" && (
                         <div className="text-left sm:text-right">
                           <p className="text-sm text-muted-foreground">ETA</p>
-                          <p className="font-semibold">{order.eta}</p>
+                          <p className="font-semibold">45-60 mins</p>
                         </div>
                       )}
                     </div>
@@ -215,7 +306,7 @@ export default function OrdersPage() {
                         <Video className="h-4 w-4" />
                         View Videos
                       </Button>
-                      {order.canComplain && (
+                      {order.status === "in_transit" && (
                         <Link
                           href={`/customer/complaint/${order.id}`}
                           className="w-full sm:w-auto"
@@ -245,21 +336,33 @@ export default function OrdersPage() {
                     <div>
                       <CardTitle className="text-base">{order.id}</CardTitle>
                       <p className="text-sm text-muted-foreground mt-1">
-                        Ordered: {order.date} • {order.time}
+                        Ordered: {formatDate(order.created_at)} •{" "}
+                        {formatTime(order.created_at)}
                       </p>
-                      <p className="text-sm text-muted-foreground">
-                        Delivered: {order.deliveredAt}
-                      </p>
+                      {order.status === "delivered" &&
+                        order.order_tracking?.[0] && (
+                          <p className="text-sm text-muted-foreground">
+                            Delivered: {formatDate(order.updated_at)} •{" "}
+                            {formatTime(order.updated_at)}
+                          </p>
+                        )}
                     </div>
                     {getStatusBadge(order.status)}
                   </div>
                 </CardHeader>
                 <CardContent className="pt-4 space-y-4">
                   <div className="space-y-2">
-                    <p className="font-semibold">{order.product}</p>
-                    <p className="text-sm text-muted-foreground">
-                      {order.farmer}
-                    </p>
+                    {order.order_items?.map((item: any, idx: number) => (
+                      <div key={idx}>
+                        <p className="font-semibold">
+                          {item.product_type} ({item.quantity}{" "}
+                          {item.weight ? `${item.weight}kg` : "units"})
+                        </p>
+                        <p className="text-sm text-muted-foreground">
+                          {item.farmer?.name || `Farmer ID: ${item.farmer_id}`}
+                        </p>
+                      </div>
+                    ))}
                   </div>
 
                   <div className="flex items-center justify-between p-3 bg-muted/50 rounded-lg">
@@ -268,7 +371,12 @@ export default function OrdersPage() {
                         Order Amount
                       </p>
                       <p className="text-lg font-bold text-primary">
-                        ₹{order.amount.toLocaleString()}
+                        ₹
+                        {(
+                          order.total_amount +
+                          order.delivery_fee +
+                          order.gst
+                        ).toLocaleString()}
                       </p>
                     </div>
                   </div>

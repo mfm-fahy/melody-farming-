@@ -1,6 +1,7 @@
 "use client";
 
-import { useState, useMemo } from "react";
+import { useState, useMemo, useEffect } from "react";
+import { useRouter } from "next/navigation";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
@@ -37,6 +38,20 @@ import { useCart } from "@/hooks/use-cart";
 import { Farmer } from "@/lib/cart-utils";
 
 export default function CustomerPage() {
+  const router = useRouter();
+  const [user, setUser] = useState<any>(null);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    const userData = localStorage.getItem("melody_current_user");
+    if (!userData) {
+      router.push("/auth");
+    } else {
+      setUser(JSON.parse(userData));
+      setLoading(false);
+    }
+  }, [router]);
+
   const [selectedCategory, setSelectedCategory] = useState<string>("all");
   const [searchTerm, setSearchTerm] = useState<string>("");
   const [filters, setFilters] = useState({
@@ -54,8 +69,8 @@ export default function CustomerPage() {
   const {
     cartSummary,
     addToCart,
-    increaseQuantity,
-    decreaseQuantity,
+    increaseQuantityByProduct,
+    decreaseQuantityByProduct,
     getItemQuantity,
     canAddItem,
   } = useCart();
@@ -71,224 +86,227 @@ export default function CustomerPage() {
     { id: "bulk", name: "Function Halls", icon: ShoppingCart },
   ];
 
-  const farmers = [
-    {
-      id: 1,
-      name: "Raju Goats",
-      village: "Chevella",
-      distance: 12,
-      rating: 4.8,
-      verified: true,
-      location: { lat: 17.3064, lng: 78.3381 },
-      products: [
-        {
-          type: "Goat",
-          breed: "Osmanabadi",
-          weightRangeMin: 22,
-          weightRangeMax: 28,
-          age: "8 months",
-          available: 8,
-          price: 22000,
-          category: "mutton",
-          bulkAvailable: true,
-        },
-        {
-          type: "Mutton ",
-          breed: "ready to cook",
-          weightRangeMin: 1,
-          weightRangeMax: 1,
-          age: "Daily Fresh",
-          available: 25,
-          price: 750,
-          category: "mutton",
-          bulkAvailable: false,
-        },
-      ],
-      image: "/healthy-goat-farm-india.jpg",
-    },
-    {
-      id: 2,
-      name: "Lakshmi Farms",
-      village: "Shankarpally",
-      distance: 8,
-      rating: 4.9,
-      verified: true,
-      location: { lat: 17.4563, lng: 78.1234 },
-      products: [
-        {
-          type: "Desi Chicken",
-          breed: "Country Chicken",
-          weightRangeMin: 1.2,
-          weightRangeMax: 1.8,
-          age: "6 months",
-          available: 25,
-          price: 420,
-          category: "chicken",
-          bulkAvailable: false,
-        },
-      ],
-      image: "/desi-country-chicken-farm.jpg",
-    },
-    {
-      id: 3,
-      name: "Krishna Dairy",
-      village: "Moinabad",
-      distance: 15,
-      rating: 4.7,
-      verified: true,
-      location: { lat: 17.2345, lng: 78.5678 },
-      products: [
-        {
-          type: "Buffalo Milk",
-          breed: "Murrah Buffalo",
-          weightRangeMin: 1,
-          weightRangeMax: 1,
-          age: "Fresh Daily",
-          available: 50,
-          price: 65,
-          category: "milk",
-          bulkAvailable: true,
-        },
-      ],
-      image: "/dairy-buffalo-milk-farm.jpg",
-    },
-    {
-      id: 4,
-      name: "Srinivas Organic",
-      village: "Vikarabad",
-      distance: 20,
-      rating: 4.6,
-      verified: true,
-      location: { lat: 17.3456, lng: 77.9012 },
-      products: [
-        {
-          type: "Mixed Vegetables",
-          breed: "Organic",
-          weightRangeMin: 1,
-          weightRangeMax: 1,
-          age: "Fresh Harvest",
-          available: 100,
-          price: 45,
-          category: "vegetables",
-          bulkAvailable: false,
-        },
-      ],
-      image: "/organic-vegetable-farm-india.jpg",
-    },
-    {
-      id: 6,
-      name: "Pure Dairy Farms",
-      village: "Sangareddy",
-      distance: 18,
-      rating: 4.8,
-      verified: true,
-      location: { lat: 17.4567, lng: 78.9012 },
-      products: [
-        {
-          type: "Organic Ghee",
-          breed: "Cow Ghee",
-          weightRangeMin: 0.5,
-          weightRangeMax: 5,
-          age: "Fresh Made",
-          available: 30,
-          price: 850,
-          category: "dairy",
-          bulkAvailable: true,
-        },
-        {
-          type: "Fresh Paneer",
-          breed: "Cow Milk",
-          weightRangeMin: 0.25,
-          weightRangeMax: 2,
-          age: "Daily Fresh",
-          available: 50,
-          price: 320,
-          category: "dairy",
-          bulkAvailable: false,
-        },
-        {
-          type: "Natural Yogurt",
-          breed: "Cow Milk",
-          weightRangeMin: 0.5,
-          weightRangeMax: 5,
-          age: "Daily Fresh",
-          available: 40,
-          price: 180,
-          category: "dairy",
-          bulkAvailable: true,
-        },
-        {
-          type: "Farm Cheese",
-          breed: "Cow Milk",
-          weightRangeMin: 0.25,
-          weightRangeMax: 1,
-          age: "Aged 2 weeks",
-          available: 25,
-          price: 450,
-          category: "dairy",
-          bulkAvailable: false,
-        },
-      ],
-      image: "/dairy-buffalo-milk-farm.jpg",
-    },
-    {
-      id: 5,
-      name: "Sheep Valley",
-      village: "Medchal",
-      distance: 6,
-      rating: 4.5,
-      verified: false,
-      location: { lat: 17.6789, lng: 78.3456 },
-      products: [
-        {
-          type: "Sheep",
-          breed: "Nellore",
-          weightRangeMin: 15,
-          weightRangeMax: 25,
-          age: "7 months",
-          available: 12,
-          price: 680,
-          category: "mutton",
-          bulkAvailable: true,
-        },
-      ],
-      image: "/healthy-goat-farm-india.jpg",
-    },
-    {
-      id: 7,
-      name: "Groundnut Farms",
-      village: "Nalgonda",
-      distance: 25,
-      rating: 4.7,
-      verified: true,
-      location: { lat: 17.1234, lng: 79.5678 },
-      products: [
-        {
-          type: "Groundnut",
-          breed: "Organic",
-          weightRangeMin: 1,
-          weightRangeMax: 10,
-          age: "Fresh Harvest",
-          available: 200,
-          price: 120,
-          category: "nuts",
-          bulkAvailable: true,
-        },
-        {
-          type: "Peanut Butter",
-          breed: "Organic",
-          weightRangeMin: 0.5,
-          weightRangeMax: 5,
-          age: "Fresh Made",
-          available: 50,
-          price: 350,
-          category: "nuts",
-          bulkAvailable: false,
-        },
-      ],
-      image: "/organic-vegetable-farm-india.jpg",
-    },
-  ];
+  const farmers = useMemo(
+    () => [
+      {
+        id: 1,
+        name: "Raju Goats",
+        village: "Chevella",
+        distance: 12,
+        rating: 4.8,
+        verified: true,
+        location: { lat: 17.3064, lng: 78.3381 },
+        products: [
+          {
+            type: "Goat",
+            breed: "Osmanabadi",
+            weightRangeMin: 22,
+            weightRangeMax: 28,
+            age: "8 months",
+            available: 8,
+            price: 22000,
+            category: "mutton",
+            bulkAvailable: true,
+          },
+          {
+            type: "Mutton ",
+            breed: "ready to cook",
+            weightRangeMin: 1,
+            weightRangeMax: 1,
+            age: "Daily Fresh",
+            available: 25,
+            price: 750,
+            category: "mutton",
+            bulkAvailable: false,
+          },
+        ],
+        image: "/healthy-goat-farm-india.jpg",
+      },
+      {
+        id: 2,
+        name: "Lakshmi Farms",
+        village: "Shankarpally",
+        distance: 8,
+        rating: 4.9,
+        verified: true,
+        location: { lat: 17.4563, lng: 78.1234 },
+        products: [
+          {
+            type: "Desi Chicken",
+            breed: "Country Chicken",
+            weightRangeMin: 1.2,
+            weightRangeMax: 1.8,
+            age: "6 months",
+            available: 25,
+            price: 420,
+            category: "chicken",
+            bulkAvailable: false,
+          },
+        ],
+        image: "/desi-country-chicken-farm.jpg",
+      },
+      {
+        id: 3,
+        name: "Krishna Dairy",
+        village: "Moinabad",
+        distance: 15,
+        rating: 4.7,
+        verified: true,
+        location: { lat: 17.2345, lng: 78.5678 },
+        products: [
+          {
+            type: "Buffalo Milk",
+            breed: "Murrah Buffalo",
+            weightRangeMin: 1,
+            weightRangeMax: 1,
+            age: "Fresh Daily",
+            available: 50,
+            price: 65,
+            category: "milk",
+            bulkAvailable: true,
+          },
+        ],
+        image: "/dairy-buffalo-milk-farm.jpg",
+      },
+      {
+        id: 4,
+        name: "Srinivas Organic",
+        village: "Vikarabad",
+        distance: 20,
+        rating: 4.6,
+        verified: true,
+        location: { lat: 17.3456, lng: 77.9012 },
+        products: [
+          {
+            type: "Mixed Vegetables",
+            breed: "Organic",
+            weightRangeMin: 1,
+            weightRangeMax: 1,
+            age: "Fresh Harvest",
+            available: 100,
+            price: 45,
+            category: "vegetables",
+            bulkAvailable: false,
+          },
+        ],
+        image: "/organic-vegetable-farm-india.jpg",
+      },
+      {
+        id: 6,
+        name: "Pure Dairy Farms",
+        village: "Sangareddy",
+        distance: 18,
+        rating: 4.8,
+        verified: true,
+        location: { lat: 17.4567, lng: 78.9012 },
+        products: [
+          {
+            type: "Organic Ghee",
+            breed: "Cow Ghee",
+            weightRangeMin: 0.5,
+            weightRangeMax: 5,
+            age: "Fresh Made",
+            available: 30,
+            price: 850,
+            category: "dairy",
+            bulkAvailable: true,
+          },
+          {
+            type: "Fresh Paneer",
+            breed: "Cow Milk",
+            weightRangeMin: 0.25,
+            weightRangeMax: 2,
+            age: "Daily Fresh",
+            available: 50,
+            price: 320,
+            category: "dairy",
+            bulkAvailable: false,
+          },
+          {
+            type: "Natural Yogurt",
+            breed: "Cow Milk",
+            weightRangeMin: 0.5,
+            weightRangeMax: 5,
+            age: "Daily Fresh",
+            available: 40,
+            price: 180,
+            category: "dairy",
+            bulkAvailable: true,
+          },
+          {
+            type: "Farm Cheese",
+            breed: "Cow Milk",
+            weightRangeMin: 0.25,
+            weightRangeMax: 1,
+            age: "Aged 2 weeks",
+            available: 25,
+            price: 450,
+            category: "dairy",
+            bulkAvailable: false,
+          },
+        ],
+        image: "/dairy-buffalo-milk-farm.jpg",
+      },
+      {
+        id: 5,
+        name: "Sheep Valley",
+        village: "Medchal",
+        distance: 6,
+        rating: 4.5,
+        verified: false,
+        location: { lat: 17.6789, lng: 78.3456 },
+        products: [
+          {
+            type: "Sheep",
+            breed: "Nellore",
+            weightRangeMin: 15,
+            weightRangeMax: 25,
+            age: "7 months",
+            available: 12,
+            price: 680,
+            category: "mutton",
+            bulkAvailable: true,
+          },
+        ],
+        image: "/healthy-goat-farm-india.jpg",
+      },
+      {
+        id: 7,
+        name: "Groundnut Farms",
+        village: "Nalgonda",
+        distance: 25,
+        rating: 4.7,
+        verified: true,
+        location: { lat: 17.1234, lng: 79.5678 },
+        products: [
+          {
+            type: "Groundnut",
+            breed: "Organic",
+            weightRangeMin: 1,
+            weightRangeMax: 10,
+            age: "Fresh Harvest",
+            available: 200,
+            price: 120,
+            category: "nuts",
+            bulkAvailable: true,
+          },
+          {
+            type: "Peanut Butter",
+            breed: "Organic",
+            weightRangeMin: 0.5,
+            weightRangeMax: 5,
+            age: "Fresh Made",
+            available: 50,
+            price: 350,
+            category: "nuts",
+            bulkAvailable: false,
+          },
+        ],
+        image: "/organic-vegetable-farm-india.jpg",
+      },
+    ],
+    []
+  );
 
   const filteredFarmers = useMemo(() => {
     let filtered = farmers.filter((farmer) => {
@@ -369,6 +387,14 @@ export default function CustomerPage() {
     return filtered;
   }, [filters, farmers]);
 
+  if (loading) {
+    return (
+      <div className="min-h-screen flex items-center justify-center">
+        <div className="animate-spin h-8 w-8 border-4 border-primary border-t-transparent rounded-full" />
+      </div>
+    );
+  }
+
   return (
     <div className="min-h-screen bg-background">
       {/* Header */}
@@ -401,7 +427,7 @@ export default function CustomerPage() {
                   <Users className="h-5 w-5" />
                 </Button>
               </Link>
-              <Link href="/customer/orders">
+              <Link href="/customer/wishlist">
                 <Button variant="ghost" size="icon" className="relative">
                   <Heart className="h-5 w-5" />
                 </Button>
@@ -414,9 +440,9 @@ export default function CustomerPage() {
                   aria-label="Open cart"
                 >
                   <ShoppingCart className="h-5 w-5" />
-                  {cartSummary.totalItems > 0 && (
+                  {cartSummary.itemCount > 0 && (
                     <Badge className="absolute -top-2 -right-2 h-5 w-5 flex items-center justify-center p-0 bg-secondary">
-                      {cartSummary.totalItems}
+                      {cartSummary.itemCount}
                     </Badge>
                   )}
                 </Button>
@@ -907,12 +933,12 @@ export default function CustomerPage() {
                         <div className="flex-1 flex items-center justify-center gap-1">
                           {(() => {
                             const currentQuantity = getItemQuantity(
-                              farmer.id,
+                              farmer.id.toString(),
                               product.type,
                               product.breed
                             );
                             const canAdd = canAddItem(
-                              farmer.id,
+                              farmer.id.toString(),
                               product.type,
                               product.breed,
                               product.available
@@ -928,7 +954,19 @@ export default function CustomerPage() {
                                   className="w-full"
                                   disabled={!canAdd}
                                   onClick={() =>
-                                    addToCart(farmer as Farmer, product)
+                                    addToCart({
+                                      farmerId: farmer.id.toString(),
+                                      productType: product.type,
+                                      breed: product.breed,
+                                      price: product.price,
+                                      weight:
+                                        product.weightRangeMin &&
+                                        product.weightRangeMax
+                                          ? `${product.weightRangeMin}-${product.weightRangeMax}kg`
+                                          : undefined,
+                                      minimumGuaranteedWeight:
+                                        product.weightRangeMin,
+                                    })
                                   }
                                 >
                                   <ShoppingCart className="h-4 w-4 mr-1" />
@@ -945,10 +983,10 @@ export default function CustomerPage() {
                                   className="h-8 w-8 p-0 hover:bg-primary/20"
                                   disabled={!canDecrease}
                                   onClick={() =>
-                                    decreaseQuantity(
-                                      `${farmer.id}-${product.type}-${product.breed}`
-                                        .replace(/\s+/g, "-")
-                                        .toLowerCase()
+                                    decreaseQuantityByProduct(
+                                      farmer.id.toString(),
+                                      product.type,
+                                      product.breed
                                     )
                                   }
                                 >
@@ -963,10 +1001,10 @@ export default function CustomerPage() {
                                   className="h-8 w-8 p-0 hover:bg-primary/20"
                                   disabled={!canIncrease}
                                   onClick={() =>
-                                    increaseQuantity(
-                                      `${farmer.id}-${product.type}-${product.breed}`
-                                        .replace(/\s+/g, "-")
-                                        .toLowerCase()
+                                    increaseQuantityByProduct(
+                                      farmer.id.toString(),
+                                      product.type,
+                                      product.breed
                                     )
                                   }
                                 >

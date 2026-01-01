@@ -45,7 +45,7 @@ export default function NotificationsSettings() {
     } else {
       router.push("/auth");
     }
-  }, []);
+  }, [router]);
 
   const save = () => {
     if (!user) return;

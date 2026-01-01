@@ -428,7 +428,7 @@ export default function BulkOrderPage() {
                 <div className="bg-blue-500/10 border border-blue-500/30 rounded-lg p-4">
                   <p className="text-sm text-blue-900">
                     <strong>Escrow Protection:</strong> Your advance payment is held securely. Balance will be collected
-                    on delivery. Full refund if order cancelled by us.
+                    on delivery. Full refund if order cancelled by us.&apos;
                   </p>
                 </div>
 
@@ -437,7 +437,7 @@ export default function BulkOrderPage() {
                     Back to Form
                   </Button>
                   <Button onClick={handlePayment} className="flex-1 bg-primary hover:bg-primary/90">
-                    Pay ₹{advancePayment.toLocaleString()}
+                    Pay &apos;₹&apos;{advancePayment.toLocaleString()}
                   </Button>
                 </div>
               </CardContent>
