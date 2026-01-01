@@ -11,89 +11,67 @@ import {
   ShieldCheck,
   Video,
   X,
-  Loader2,
 } from "lucide-react";
-import { useState, useEffect } from "react";
-import { useRouter } from "next/navigation";
-
-interface WishlistItem {
-  id: string;
-  customer_id: string;
-  farmer_id: string;
-  product_type: string;
-  breed: string;
-  quantity: number;
-  price_per_unit: number;
-  weight: string | null;
-  minimum_guaranteed_weight: number | null;
-  created_at: string;
-  updated_at: string;
-  farmer: {
-    name: string;
-    village: string;
-    phone: string;
-    is_verified: boolean;
-  };
-}
+import { useState } from "react";
 
 export default function WishlistScreen() {
-  const router = useRouter();
-  const [wishlistItems, setWishlistItems] = useState<WishlistItem[]>([]);
-  const [loading, setLoading] = useState(true);
-  const [user, setUser] = useState<any>(null);
+  const [wishlistItems, setWishlistItems] = useState([
+    {
+      id: 1,
+      farmer: "Raju Goats",
+      village: "Chevella",
+      distance: "12 km",
+      rating: 4.8,
+      verified: true,
+      product: {
+        type: "Goat",
+        breed: "Osmanabadi",
+        weight: "22-28 kg",
+        age: "8 months",
+        available: 8,
+        price: 750,
+      },
+      image: "/healthy-goat-farm-india.jpg",
+    },
+    {
+      id: 2,
+      farmer: "Lakshmi Farms",
+      village: "Shankarpally",
+      distance: "8 km",
+      rating: 4.9,
+      verified: true,
+      product: {
+        type: "Desi Chicken",
+        breed: "Country Chicken",
+        weight: "1.2-1.8 kg",
+        age: "6 months",
+        available: 25,
+        price: 420,
+      },
+      image: "/desi-country-chicken-farm.jpg",
+    },
+    {
+      id: 3,
+      farmer: "Krishna Dairy",
+      village: "Moinabad",
+      distance: "15 km",
+      rating: 4.7,
+      verified: true,
+      product: {
+        type: "Buffalo Milk",
+        breed: "Murrah Buffalo",
+        weight: "Per liter",
+        age: "Fresh Daily",
+        available: 50,
+        price: 65,
+      },
+      image: "/dairy-buffalo-milk-farm.jpg",
+    },
+  ]);
 
-  useEffect(() => {
-    const userData = localStorage.getItem("melody_current_user");
-    if (!userData) {
-      router.push("/auth");
-      return;
-    }
-    setUser(JSON.parse(userData));
-  }, [router]);
-
-  useEffect(() => {
-    if (user) {
-      fetchWishlist();
-    }
-  }, [user]);
-
-  const fetchWishlist = async () => {
-    try {
-      const response = await fetch(`/api/wishlist?customerId=${user.id}`);
-      if (response.ok) {
-        const data = await response.json();
-        setWishlistItems(data.wishlist || []);
-      }
-    } catch (error) {
-      console.error("Error fetching wishlist:", error);
-    } finally {
-      setLoading(false);
-    }
+  const removeFromWishlist = (id: number) => {
+    setWishlistItems(wishlistItems.filter((item) => item.id !== id));
   };
-
-  const removeFromWishlist = async (itemId: string) => {
-    try {
-      const response = await fetch(
-        `/api/wishlist?customerId=${user.id}&itemId=${itemId}`,
-        {
-          method: "DELETE",
-        }
-      );
-      if (response.ok) {
-        setWishlistItems(wishlistItems.filter((item) => item.id !== itemId));
-      }
-    } catch (error) {
-      console.error("Error removing from wishlist:", error);
-    }
-  };
-
-  if (loading) {
-    return (
-      <div className="min-h-screen flex items-center justify-center">
-        <Loader2 className="h-8 w-8 animate-spin" />
-      </div>
-    );
-  }
 
   return (
     <div className="container mx-auto px-4 py-6">
@@ -118,11 +96,11 @@ export default function WishlistScreen() {
             {/* Product Image */}
             <div className="relative h-40 sm:h-48 overflow-hidden">
               <img
-                src="/placeholder.svg"
-                alt={item.farmer.name}
+                src={item.image || "/placeholder.svg"}
+                alt={item.farmer}
                 className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-300"
               />
-              {item.farmer.is_verified && (
+              {item.verified && (
                 <Badge className="absolute top-3 left-3 bg-accent text-accent-foreground gap-1">
                   <ShieldCheck className="h-3 w-3" />
                   Verified
@@ -133,15 +111,15 @@ export default function WishlistScreen() {
             <CardHeader className="pb-3">
               <div className="flex items-start justify-between">
                 <div>
-                  <CardTitle className="text-lg">{item.farmer.name}</CardTitle>
+                  <CardTitle className="text-lg">{item.farmer}</CardTitle>
                   <p className="text-sm text-muted-foreground flex items-center gap-1 mt-1">
                     <MapPin className="h-3 w-3" />
-                    {item.farmer.village}
+                    {item.village} • {item.distance}
                   </p>
                 </div>
                 <div className="flex items-center gap-1 bg-primary/10 px-2 py-1 rounded-md">
                   <Star className="h-4 w-4 fill-primary text-primary" />
-                  <span className="text-sm font-semibold">4.5</span>
+                  <span className="text-sm font-semibold">{item.rating}</span>
                 </div>
               </div>
             </CardHeader>
@@ -151,15 +129,15 @@ export default function WishlistScreen() {
                 <div className="flex items-start justify-between mb-2">
                   <div>
                     <p className="font-semibold text-foreground">
-                      {item.product_type}
+                      {item.product.type}
                     </p>
                     <p className="text-xs text-muted-foreground">
-                      {item.breed}
+                      {item.product.breed}
                     </p>
                   </div>
                   <div className="text-right">
                     <p className="text-lg font-bold text-primary">
-                      ₹{item.price_per_unit}/kg
+                      ₹{item.product.price}/kg
                     </p>
                   </div>
                 </div>
@@ -167,16 +145,15 @@ export default function WishlistScreen() {
                 <div className="grid grid-cols-2 gap-2 text-xs text-muted-foreground mb-3">
                   <div>
                     <span className="font-medium">Weight:</span>{" "}
-                    {item.weight || "N/A"}
+                    {item.product.weight}
                   </div>
                   <div>
-                    <span className="font-medium">Quantity:</span>{" "}
-                    {item.quantity}
+                    <span className="font-medium">Age:</span> {item.product.age}
                   </div>
                   <div className="col-span-2">
-                    <span className="font-medium">Min Weight:</span>{" "}
+                    <span className="font-medium">Available:</span>{" "}
                     <span className="text-primary font-semibold">
-                      {item.minimum_guaranteed_weight || "N/A"} kg
+                      {item.product.available} units
                     </span>
                   </div>
                 </div>
