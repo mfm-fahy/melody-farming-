@@ -826,7 +826,11 @@ export default function CustomerPage() {
             filteredFarmers.map((farmer) => (
               <Card
                 key={farmer.id}
-                className="hover:shadow-lg transition-shadow overflow-hidden group"
+                className="hover:shadow-lg transition-shadow overflow-hidden group cursor-pointer"
+                onClick={() => {
+                  const firstProduct = farmer.products[0];
+                  router.push(`/customer/product?farmerId=${farmer.id}&productType=${encodeURIComponent(firstProduct.type)}&breed=${encodeURIComponent(firstProduct.breed)}`);
+                }}
               >
                 {/* Farmer Image */}
                 <div className="relative h-40 sm:h-48 overflow-hidden">
@@ -917,19 +921,6 @@ export default function CustomerPage() {
                       </div>
 
                       <div className="flex gap-2">
-                        <Button
-                          size="sm"
-                          variant="outline"
-                          className="flex-1 gap-1 bg-transparent"
-                          onClick={() =>
-                            alert(
-                              `Viewing video for ${farmer.name}'s ${product.type}`
-                            )
-                          }
-                        >
-                          <Video className="h-4 w-4" />
-                          View Video
-                        </Button>
                         <div className="flex-1 flex items-center justify-center gap-1">
                           {(() => {
                             const currentQuantity = getItemQuantity(
@@ -953,8 +944,9 @@ export default function CustomerPage() {
                                   size="sm"
                                   className="w-full"
                                   disabled={!canAdd}
-                                  onClick={() =>
-                                    addToCart({
+                                  onClick={async (e) => {
+                                    e.stopPropagation();
+                                    const success = await addToCart({
                                       farmerId: farmer.id.toString(),
                                       productType: product.type,
                                       breed: product.breed,
@@ -966,8 +958,21 @@ export default function CustomerPage() {
                                           : undefined,
                                       minimumGuaranteedWeight:
                                         product.weightRangeMin,
-                                    })
-                                  }
+                                    });
+                                    if (success) {
+                                      // Show success feedback
+                                      const button = document.activeElement as HTMLButtonElement;
+                                      if (button) {
+                                        const originalText = button.textContent;
+                                        button.textContent = "Added!";
+                                        button.style.backgroundColor = "#22c55e";
+                                        setTimeout(() => {
+                                          button.textContent = originalText;
+                                          button.style.backgroundColor = "";
+                                        }, 1000);
+                                      }
+                                    }
+                                  }}
                                 >
                                   <ShoppingCart className="h-4 w-4 mr-1" />
                                   {canAdd ? "Add to Cart" : "Out of Stock"}
@@ -982,13 +987,14 @@ export default function CustomerPage() {
                                   variant="ghost"
                                   className="h-8 w-8 p-0 hover:bg-primary/20"
                                   disabled={!canDecrease}
-                                  onClick={() =>
+                                  onClick={(e) => {
+                                    e.stopPropagation();
                                     decreaseQuantityByProduct(
                                       farmer.id.toString(),
                                       product.type,
                                       product.breed
-                                    )
-                                  }
+                                    );
+                                  }}
                                 >
                                   <Minus className="h-4 w-4" />
                                 </Button>
@@ -1000,13 +1006,14 @@ export default function CustomerPage() {
                                   variant="ghost"
                                   className="h-8 w-8 p-0 hover:bg-primary/20"
                                   disabled={!canIncrease}
-                                  onClick={() =>
+                                  onClick={(e) => {
+                                    e.stopPropagation();
                                     increaseQuantityByProduct(
                                       farmer.id.toString(),
                                       product.type,
                                       product.breed
-                                    )
-                                  }
+                                    );
+                                  }}
                                 >
                                   <Plus className="h-4 w-4" />
                                 </Button>

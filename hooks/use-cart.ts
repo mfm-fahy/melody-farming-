@@ -53,10 +53,24 @@ export function useCart() {
         const data = await response.json();
         const items = data.cart.map((item: any) => ({
           ...item,
-          price: item.price_per_unit, // Map price_per_unit to price for cart display
-          farmerName: "Farmer", // Default name since we removed the join
-          farmerVillage: "Village", // Default village since we removed the join
-          available: 10, // Default availability, could be fetched from farmer_stock
+          id: item.id,
+          customer_id: item.customerId,
+          farmer_id: item.farmerId,
+          product_type: item.productType,
+          breed: item.breed,
+          quantity: item.quantity,
+          price_per_unit: item.pricePerUnit,
+          weight: item.weight,
+          minimum_guaranteed_weight: item.minimumGuaranteedWeight,
+          farmer: {
+            name: "Farmer",
+            village: "Village", 
+            phone: "",
+            is_verified: true
+          },
+          farmerName: "Farmer",
+          farmerVillage: "Village",
+          available: 10,
         }));
         setCartItems(items);
       }
@@ -70,6 +84,7 @@ export function useCart() {
   // Load cart on mount and when customerId changes
   useEffect(() => {
     if (customerId) {
+      console.log("Loading cart for customer:", customerId);
       fetchCart();
     }
   }, [customerId, fetchCart]);
@@ -85,7 +100,7 @@ export function useCart() {
       weight?: string;
       minimumGuaranteedWeight?: number;
     }) => {
-      if (!customerId) return;
+      if (!customerId) return false;
 
       try {
         const response = await fetch("/api/cart", {
@@ -106,10 +121,13 @@ export function useCart() {
         });
 
         if (response.ok) {
-          await fetchCart(); // Refresh cart
+          await fetchCart();
+          return true;
         }
+        return false;
       } catch (error) {
         console.error("Failed to add to cart:", error);
+        return false;
       }
     },
     [customerId, fetchCart]

@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
@@ -29,6 +29,27 @@ import Link from "next/link";
 
 export default function AdminPage() {
   const [selectedTab, setSelectedTab] = useState("overview");
+  const [orders, setOrders] = useState([]);
+  const [loading, setLoading] = useState(false);
+
+  useEffect(() => {
+    if (selectedTab === "orders") {
+      fetchOrders();
+    }
+  }, [selectedTab]);
+
+  const fetchOrders = async () => {
+    setLoading(true);
+    try {
+      const response = await fetch('/api/admin/orders');
+      const data = await response.json();
+      setOrders(data.orders || []);
+    } catch (error) {
+      console.error('Failed to fetch orders:', error);
+    } finally {
+      setLoading(false);
+    }
+  };
 
   // Dashboard Stats
   const stats = {
@@ -679,17 +700,101 @@ export default function AdminPage() {
             <div className="flex items-center justify-between">
               <h2 className="text-xl font-bold">All Orders</h2>
               <div className="flex gap-2">
-                <Button variant="outline" className="bg-transparent">
-                  Export Data
+                <Button 
+                  variant="outline" 
+                  className="bg-transparent"
+                  onClick={fetchOrders}
+                  disabled={loading}
+                >
+                  {loading ? "Loading..." : "Refresh"}
                 </Button>
               </div>
             </div>
-            <Card>
-              <CardContent className="p-6 text-center text-muted-foreground">
-                <Package className="h-12 w-12 mx-auto mb-3 opacity-50" />
-                <p>Order management coming soon</p>
-              </CardContent>
-            </Card>
+            
+            {loading ? (
+              <Card>
+                <CardContent className="p-6 text-center text-muted-foreground">
+                  <Package className="h-12 w-12 mx-auto mb-3 opacity-50" />
+                  <p>Loading orders...</p>
+                </CardContent>
+              </Card>
+            ) : orders.length === 0 ? (
+              <Card>
+                <CardContent className="p-6 text-center text-muted-foreground">
+                  <Package className="h-12 w-12 mx-auto mb-3 opacity-50" />
+                  <p>No orders found</p>
+                </CardContent>
+              </Card>
+            ) : (
+              <div className="space-y-4">
+                {orders.map((order: any) => (
+                  <Card key={order._id} className="border-l-4 border-l-primary">
+                    <CardContent className="p-4">
+                      <div className="space-y-3">
+                        <div className="flex items-start justify-between">
+                          <div>
+                            <p className="font-bold">{order._id}</p>
+                            <p className="text-sm text-muted-foreground">
+                              Customer: {order.customerId}
+                            </p>
+                            <p className="text-xs text-muted-foreground">
+                              {new Date(order.createdAt).toLocaleString()}
+                            </p>
+                          </div>
+                          <Badge className={`${
+                            order.status === 'pending' 
+                              ? 'bg-yellow-500/10 text-yellow-700 border-yellow-500/20'
+                              : order.status === 'completed'
+                              ? 'bg-green-500/10 text-green-700 border-green-500/20'
+                              : 'bg-blue-500/10 text-blue-700 border-blue-500/20'
+                          }`}>
+                            {order.status}
+                          </Badge>
+                        </div>
+
+                        <div className="grid grid-cols-1 md:grid-cols-3 gap-3 text-sm">
+                          <div>
+                            <p className="text-xs text-muted-foreground">Total Amount</p>
+                            <p className="font-bold text-primary text-lg">
+                              ₹{order.totalAmount?.toLocaleString() || 0}
+                            </p>
+                          </div>
+                          <div>
+                            <p className="text-xs text-muted-foreground">Payment Method</p>
+                            <p className="font-medium">{order.paymentMethod || 'N/A'}</p>
+                          </div>
+                          <div>
+                            <p className="text-xs text-muted-foreground">Items</p>
+                            <p className="font-medium">{order.items?.length || 0} items</p>
+                          </div>
+                        </div>
+
+                        {order.items && order.items.length > 0 && (
+                          <div className="border-t pt-3">
+                            <p className="text-xs text-muted-foreground mb-2">Order Items:</p>
+                            <div className="space-y-1">
+                              {order.items.map((item: any, index: number) => (
+                                <div key={index} className="text-sm flex justify-between">
+                                  <span>{item.productType} - {item.breed} (x{item.quantity})</span>
+                                  <span className="font-medium">₹{item.totalPrice}</span>
+                                </div>
+                              ))}
+                            </div>
+                          </div>
+                        )}
+
+                        {order.deliveryAddress && (
+                          <div className="border-t pt-3">
+                            <p className="text-xs text-muted-foreground">Delivery Address:</p>
+                            <p className="text-sm">{order.deliveryAddress}</p>
+                          </div>
+                        )}
+                      </div>
+                    </CardContent>
+                  </Card>
+                ))}
+              </div>
+            )}
           </TabsContent>
 
           {/* Drivers Tab */}

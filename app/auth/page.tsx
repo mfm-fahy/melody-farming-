@@ -36,18 +36,38 @@ export default function AuthPage() {
     }
 
     setIsLoading(true);
-    await new Promise((resolve) => setTimeout(resolve, 1000));
-    setIsLoading(false);
+    
+    try {
+      const response = await fetch('/api/auth/send-otp', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ phone }),
+      });
 
-    const existingUser = localStorage.getItem(`melody_user_${phone}`);
-    if (mode === "login" && !existingUser) {
-      alert("Phone number not registered. Please register first.");
-      setMode("register");
-      return;
+      const data = await response.json();
+
+      if (data.success) {
+        const existingUser = localStorage.getItem(`melody_user_${phone}`);
+        if (mode === "login" && !existingUser) {
+          alert("Phone number not registered. Please register first.");
+          setMode("register");
+          setIsLoading(false);
+          return;
+        }
+        
+        setStep("otp");
+        alert(`OTP sent to +91${phone}`);
+      } else {
+        alert(data.error || 'Failed to send OTP');
+      }
+    } catch (error) {
+      console.error('Error sending OTP:', error);
+      alert('Failed to send OTP. Please try again.');
     }
-
-    setStep("otp");
-    alert(`Demo: OTP sent to ${phone}. Use any 6 digits to continue.`);
+    
+    setIsLoading(false);
   };
 
   const handleVerifyOTP = async () => {
@@ -57,26 +77,46 @@ export default function AuthPage() {
     }
 
     setIsLoading(true);
-    await new Promise((resolve) => setTimeout(resolve, 1000));
-    setIsLoading(false);
+    
+    try {
+      const response = await fetch('/api/auth/verify-otp', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ phone, otp }),
+      });
 
-    if (mode === "register") {
-      const existingUser = localStorage.getItem(`melody_user_${phone}`);
-      if (!existingUser) {
-        setStep("details");
-        return;
+      const data = await response.json();
+
+      if (data.success && data.verified) {
+        if (mode === "register") {
+          const existingUser = localStorage.getItem(`melody_user_${phone}`);
+          if (!existingUser) {
+            setStep("details");
+            setIsLoading(false);
+            return;
+          }
+        }
+
+        const userData = localStorage.getItem(`melody_user_${phone}`);
+        if (userData) {
+          localStorage.setItem("melody_current_user", userData);
+          router.push("/customer");
+        } else {
+          alert("User not found. Please register.");
+          setMode("register");
+          setStep("phone");
+        }
+      } else {
+        alert(data.error || 'Invalid OTP. Please try again.');
       }
+    } catch (error) {
+      console.error('Error verifying OTP:', error);
+      alert('Failed to verify OTP. Please try again.');
     }
-
-    const userData = localStorage.getItem(`melody_user_${phone}`);
-    if (userData) {
-      localStorage.setItem("melody_current_user", userData);
-      router.push("/customer");
-    } else {
-      alert("User not found. Please register.");
-      setMode("register");
-      setStep("phone");
-    }
+    
+    setIsLoading(false);
   };
 
   const handleRegister = async () => {
@@ -466,17 +506,17 @@ export default function AuthPage() {
             <div className="flex items-center justify-center gap-2 pt-4 border-t">
               <ShieldCheck className="h-4 w-4 text-green-600" />
               <span className="text-xs text-muted-foreground">
-                Secure OTP Authentication
+                Secure Twilio OTP Authentication
               </span>
             </div>
           </CardContent>
         </Card>
 
-        <Card className="mt-4 bg-yellow-500/10 border-yellow-500/30">
+        <Card className="mt-4 bg-blue-500/10 border-blue-500/30">
           <CardContent className="p-4">
-            <p className="text-sm text-center text-yellow-800">
-              <strong>Demo Mode:</strong> Use any 10-digit phone and any 6-digit
-              OTP. Select roles during registration to access Services.
+            <p className="text-sm text-center text-blue-800">
+              <strong>Twilio OTP:</strong> Real SMS OTP will be sent to your phone number.
+              Make sure to enter a valid Indian mobile number.
             </p>
           </CardContent>
         </Card>

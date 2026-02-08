@@ -281,13 +281,13 @@ export default function CartPage() {
                               {item.breed}
                             </p>
                             <p className="text-xs text-muted-foreground mt-1">
-                              {item.farmerName}, {item.farmerVillage}
+                              {item.farmerName || "Farmer"}, {item.farmerVillage || "Village"}
                             </p>
                             <div className="flex items-center gap-2 mt-2">
                               <span className="text-sm text-muted-foreground">
                                 Weight:
                               </span>
-                              <span className="font-medium">{item.weight}</span>
+                              <span className="font-medium">{item.weight || "N/A"}</span>
                             </div>
                             {item.minimum_guaranteed_weight && (
                               <div className="mt-1">
@@ -304,7 +304,7 @@ export default function CartPage() {
                                 Available:
                               </span>
                               <span className="font-medium text-primary">
-                                {item.available} units
+                                {item.available || 10} units
                               </span>
                             </div>
                           </div>
