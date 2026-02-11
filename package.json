@@ -73,17 +73,10 @@
     "@typescript-eslint/eslint-plugin": "^8.46.0",
     "@typescript-eslint/parser": "^8.46.0",
     "@typescript-eslint/typescript-estree": "^8.46.0",
-<<<<<<< HEAD
     "eslint": "^9.0.0",
     "eslint-config-next": "^16.1.6",
     "eslint-plugin-import": "^2.29.1",
     "eslint-plugin-react-hooks": "^5.0.0",
-=======
-    "eslint": "^8.57.1",
-    "eslint-config-next": "^16.1.6",
-    "eslint-plugin-import": "^2.29.1",
-    "eslint-plugin-react-hooks": "^4.6.0",
->>>>>>> 9b5b248559c427b61e5acce082ccb4965512ec14
     "postcss": "^8.5",
     "tailwindcss": "^4.1.9",
     "tw-animate-css": "1.3.3",

@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
-import { supabase } from "@/lib/supabase";
+import { connectToDatabase } from "@/lib/mongodb";
 
 export async function POST(request: NextRequest) {
   try {
@@ -13,7 +13,7 @@ export async function POST(request: NextRequest) {
       age,
       quantity,
       price,
-      farmerId, // Assuming farmer ID from auth
+      farmerId,
     } = body;
 
     // Validation
@@ -38,40 +38,28 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    // Create stock item with guaranteed weight
+    const { db } = await connectToDatabase();
+
     const newStockItem = {
-      id: Date.now().toString(),
-      farmer_id: farmerId || "default-farmer", // In real app, get from auth
+      farmer_id: farmerId || "default-farmer",
       animal_type: animalType || "Unknown",
       breed: breed || "",
       weight_range_min: Number(weightRangeMin),
       weight_range_max: Number(weightRangeMax),
-      minimum_guaranteed_weight: Number(weightRangeMin), // Automatically set to min
+      minimum_guaranteed_weight: Number(weightRangeMin),
       age: age || "",
       quantity: Number(quantity) || 1,
       price: Number(price) || 0,
       status: "available",
       video_uploaded: false,
-      created_at: new Date().toISOString(),
+      created_at: new Date(),
     };
 
-    // Save to Supabase
-    const { data, error } = await supabase
-      .from("farmer_stock")
-      .insert([newStockItem])
-      .select();
-
-    if (error) {
-      console.error("Error saving farmer stock:", error);
-      return NextResponse.json(
-        { error: "Failed to save stock item" },
-        { status: 500 }
-      );
-    }
+    const result = await db.collection("farmer_stock").insertOne(newStockItem);
 
     return NextResponse.json({
       success: true,
-      stockItem: data[0],
+      stockItem: { ...newStockItem, _id: result.insertedId },
     });
   } catch (error) {
     console.error("Error adding farmer stock:", error);
@@ -84,26 +72,18 @@ export async function POST(request: NextRequest) {
 
 export async function GET(request: NextRequest) {
   try {
-    // In real app, get farmerId from auth/session
     const farmerId =
       request.nextUrl.searchParams.get("farmerId") || "default-farmer";
 
-    const { data, error } = await supabase
-      .from("farmer_stock")
-      .select("*")
-      .eq("farmer_id", farmerId);
-
-    if (error) {
-      console.error("Error fetching farmer stock:", error);
-      return NextResponse.json(
-        { error: "Failed to fetch stock items" },
-        { status: 500 }
-      );
-    }
+    const { db } = await connectToDatabase();
+    const stock = await db
+      .collection("farmer_stock")
+      .find({ farmer_id: farmerId })
+      .toArray();
 
     return NextResponse.json({
       success: true,
-      stock: data,
+      stock,
     });
   } catch (error) {
     console.error("Error fetching farmer stock:", error);
