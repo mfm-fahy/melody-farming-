@@ -30,11 +30,14 @@ const tabs = [
 
 export default function BottomNavigation() {
   const pathname = usePathname();
+<<<<<<< HEAD
   
   // Hide navigation on product page
   if (pathname === '/customer/product') {
     return null;
   }
+=======
+>>>>>>> 9b5b248559c427b61e5acce082ccb4965512ec14
 
   return (
     <div className="fixed bottom-0 left-0 right-0 z-50 bg-card border-t border-border">
