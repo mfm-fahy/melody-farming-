@@ -122,8 +122,11 @@
   }
   html,
   body {
-    @apply bg-background text-foreground;
+    @apply text-foreground;
     margin: 0;
     padding: 0;
+    background: #ffffff;
+    background-attachment: fixed;
+    min-height: 100vh;
   }
 }

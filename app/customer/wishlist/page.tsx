@@ -74,13 +74,15 @@ export default function WishlistScreen() {
   };
 
   return (
-    <div className="container mx-auto px-4 py-6">
-      <div className="mb-6">
-        <h1 className="text-2xl font-bold mb-2">My Wishlist</h1>
-        <p className="text-muted-foreground">Your saved farm-fresh favorites</p>
-      </div>
-
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+    <div className="min-h-screen bg-white">
+      <header className="sticky top-0 z-50 bg-gradient-to-r from-primary to-primary/90 shadow-lg">
+        <div className="container mx-auto px-4 py-4">
+          <h1 className="text-2xl font-bold text-white">My Wishlist</h1>
+          <p className="text-sm text-white/90">Your saved farm-fresh favorites</p>
+        </div>
+      </header>
+      
+      <div className="container mx-auto px-4 py-6">
         {wishlistItems.map((item) => (
           <Card key={item.id} className="overflow-hidden group relative">
             {/* Remove from wishlist button */}

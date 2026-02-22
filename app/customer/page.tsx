@@ -36,11 +36,39 @@ import {
 import Link from "next/link";
 import { useCart } from "@/hooks/use-cart";
 import { Farmer } from "@/lib/cart-utils";
+import { FloatingCartButton } from "@/components/floating-cart-button";
+import { FarmerCardSkeleton } from "@/components/ui/skeleton";
+import { useFavorites } from "@/hooks/use-favorites";
+import { QuickFilters } from "@/components/quick-filters";
+import { SortDropdown } from "@/components/sort-dropdown";
 
 export default function CustomerPage() {
   const router = useRouter();
   const [user, setUser] = useState<any>(null);
   const [loading, setLoading] = useState(true);
+  const [currentBannerIndex, setCurrentBannerIndex] = useState(0);
+  const [placeholderIndex, setPlaceholderIndex] = useState(0);
+  const [quickFilters, setQuickFilters] = useState<string[]>([]);
+  const [sortBy, setSortBy] = useState("distance");
+  const [currentScreen, setCurrentScreen] = useState(0);
+  const [touchStart, setTouchStart] = useState(0);
+  const [touchEnd, setTouchEnd] = useState(0);
+
+  const bannerImages = [
+    "/banner-1.jpeg",
+    "/banner-2.jpeg",
+    "/banner-3.jpeg",
+    "/banner-4.jpeg",
+  ];
+
+  const placeholders = [
+    "Search for chicken...",
+    "Search for mutton...",
+    "Search for milk...",
+    "Search for vegetables...",
+    "Search for dairy products...",
+    "Search for nuts...",
+  ];
 
   useEffect(() => {
     const userData = localStorage.getItem("melody_current_user");
@@ -51,6 +79,20 @@ export default function CustomerPage() {
       setLoading(false);
     }
   }, [router]);
+
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setCurrentBannerIndex((prev) => (prev + 1) % bannerImages.length);
+    }, 3000);
+    return () => clearInterval(interval);
+  }, [bannerImages.length]);
+
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setPlaceholderIndex((prev) => (prev + 1) % placeholders.length);
+    }, 2000);
+    return () => clearInterval(interval);
+  }, [placeholders.length]);
 
   const [selectedCategory, setSelectedCategory] = useState<string>("all");
   const [searchTerm, setSearchTerm] = useState<string>("");
@@ -66,6 +108,7 @@ export default function CustomerPage() {
   });
   const [showFilters, setShowFilters] = useState(false);
   const [showServices, setShowServices] = useState(false);
+  const { favorites, toggleFavorite, isFavorite } = useFavorites();
   const {
     cartSummary,
     addToCart,
@@ -75,15 +118,53 @@ export default function CustomerPage() {
     canAddItem,
   } = useCart();
 
+  const handleTouchStart = (e: React.TouchEvent) => {
+    setTouchStart(e.targetTouches[0].clientX);
+  };
+
+  const handleTouchMove = (e: React.TouchEvent) => {
+    setTouchEnd(e.targetTouches[0].clientX);
+  };
+
+  const handleTouchEnd = () => {
+    if (!touchStart || !touchEnd) return;
+    const distance = touchStart - touchEnd;
+    const isLeftSwipe = distance > 50;
+    const isRightSwipe = distance < -50;
+
+    if (isLeftSwipe && currentScreen < 2) {
+      setCurrentScreen(currentScreen + 1);
+    }
+    if (isRightSwipe && currentScreen > 0) {
+      setCurrentScreen(currentScreen - 1);
+    }
+    setTouchStart(0);
+    setTouchEnd(0);
+  };
+
+  const farmTypes = [
+    { id: "goat", name: "Goat Farm", icon: Beef, image: "https://images.unsplash.com/photo-1516467508483-a7212febe31a?w=400&h=300&fit=crop", bgColor: "#fef3c7" },
+    { id: "chicken", name: "Poultry Farm", icon: ChefHat, image: "https://images.unsplash.com/photo-1548550023-2bdb3c5beed7?w=400&h=300&fit=crop", bgColor: "#ffedd5" },
+    { id: "dairy", name: "Dairy Farm", icon: Milk, image: "https://images.unsplash.com/photo-1563636619-e9143da7973b?w=400&h=300&fit=crop", bgColor: "#e0f2fe" },
+    { id: "vegetables", name: "Vegetable Farm", icon: Carrot, image: "https://images.unsplash.com/photo-1464226184884-fa280b87c399?w=400&h=300&fit=crop", bgColor: "#dcfce7" },
+  ];
+
+  const byProducts = [
+    { id: "dried-meat", name: "Dried Meat", image: "https://images.unsplash.com/photo-1607623814075-e51df1bdc82f?w=400&h=300&fit=crop", bgColor: "#fef3c7" },
+    { id: "dried-veg", name: "Dried Vegetables", image: "https://images.unsplash.com/photo-1566385101042-1a0aa0c1268c?w=400&h=300&fit=crop", bgColor: "#dcfce7" },
+    { id: "groundnut", name: "Groundnut Haulms", image: "https://images.unsplash.com/photo-1589927986089-35812388d1f4?w=400&h=300&fit=crop", bgColor: "#f3e8ff" },
+    { id: "eggs", name: "Country Eggs", image: "https://images.unsplash.com/photo-1582722872445-44dc5f7e3c8f?w=400&h=300&fit=crop", bgColor: "#ffedd5" },
+  ];
+
   const categories = [
-    { id: "all", name: "All Products", icon: Home },
-    { id: "chicken", name: "Desi Chicken", icon: ChefHat },
-    { id: "mutton", name: "Organic Mutton", icon: Beef },
-    { id: "milk", name: "Fresh Milk", icon: Milk },
-    { id: "dairy", name: "Dairy Products", icon: Milk },
-    { id: "vegetables", name: "Vegetables", icon: Carrot },
-    { id: "nuts", name: "Nuts & By-Products", icon: Package },
-    { id: "bulk", name: "Function Halls", icon: ShoppingCart },
+    { id: "all", name: "All Products", icon: Home, image: "https://images.unsplash.com/photo-1488459716781-31db52582fe9?w=200&h=200&fit=crop", bgColor: "#f1f5f9" },
+    { id: "chicken", name: "Desi Chicken", icon: ChefHat, image: "https://images.unsplash.com/photo-1587593810167-a84920ea0781?w=200&h=200&fit=crop", bgColor: "#ffedd5" },
+    { id: "mutton", name: "Organic Mutton", icon: Beef, image: "https://images.unsplash.com/photo-1602470520998-f4a52199a3d6?w=200&h=200&fit=crop", bgColor: "#fef3c7" },
+    { id: "milk", name: "Fresh Milk", icon: Milk, image: "https://images.unsplash.com/photo-1563636619-e9143da7973b?w=200&h=200&fit=crop", bgColor: "#e0f2fe" },
+    { id: "dairy", name: "Dairy Products", icon: Milk, image: "https://images.unsplash.com/photo-1628088062854-d1870b4553da?w=200&h=200&fit=crop", bgColor: "#e0f2fe" },
+    { id: "vegetables", name: "Vegetables", icon: Carrot, image: "https://images.unsplash.com/photo-1540420773420-3366772f4999?w=200&h=200&fit=crop", bgColor: "#dcfce7" },
+    { id: "nuts", name: "Nuts & By-Products", icon: Package, image: "https://images.unsplash.com/photo-1508747703725-719777637510?w=200&h=200&fit=crop", bgColor: "#f3e8ff" },
+    { id: "bulk", name: "Function Halls", icon: ShoppingCart, image: "https://images.unsplash.com/photo-1464366400600-7168b8af9bc3?w=200&h=200&fit=crop", bgColor: "#fef3c7" },
   ];
 
   const farmers = useMemo(
@@ -120,7 +201,7 @@ export default function CustomerPage() {
             bulkAvailable: false,
           },
         ],
-        image: "/healthy-goat-farm-india.jpg",
+        image: "https://images.unsplash.com/photo-1516467508483-a7212febe31a?w=800&h=600&fit=crop",
       },
       {
         id: 2,
@@ -143,7 +224,7 @@ export default function CustomerPage() {
             bulkAvailable: false,
           },
         ],
-        image: "/desi-country-chicken-farm.jpg",
+        image: "https://images.unsplash.com/photo-1548550023-2bdb3c5beed7?w=800&h=600&fit=crop",
       },
       {
         id: 3,
@@ -166,7 +247,7 @@ export default function CustomerPage() {
             bulkAvailable: true,
           },
         ],
-        image: "/dairy-buffalo-milk-farm.jpg",
+        image: "https://images.unsplash.com/photo-1563636619-e9143da7973b?w=800&h=600&fit=crop",
       },
       {
         id: 4,
@@ -189,7 +270,7 @@ export default function CustomerPage() {
             bulkAvailable: false,
           },
         ],
-        image: "/organic-vegetable-farm-india.jpg",
+        image: "https://images.unsplash.com/photo-1464226184884-fa280b87c399?w=800&h=600&fit=crop",
       },
       {
         id: 6,
@@ -245,7 +326,7 @@ export default function CustomerPage() {
             bulkAvailable: false,
           },
         ],
-        image: "/dairy-buffalo-milk-farm.jpg",
+        image: "https://images.unsplash.com/photo-1628088062854-d1870b4553da?w=800&h=600&fit=crop",
       },
       {
         id: 5,
@@ -268,7 +349,7 @@ export default function CustomerPage() {
             bulkAvailable: true,
           },
         ],
-        image: "/healthy-goat-farm-india.jpg",
+        image: "https://images.unsplash.com/photo-1602470520998-f4a52199a3d6?w=800&h=600&fit=crop",
       },
       {
         id: 7,
@@ -302,7 +383,7 @@ export default function CustomerPage() {
             bulkAvailable: false,
           },
         ],
-        image: "/organic-vegetable-farm-india.jpg",
+        image: "https://images.unsplash.com/photo-1592921870789-04563d55041c?w=800&h=600&fit=crop",
       },
     ],
     []
@@ -389,27 +470,38 @@ export default function CustomerPage() {
 
   if (loading) {
     return (
-      <div className="min-h-screen flex items-center justify-center">
-        <div className="animate-spin h-8 w-8 border-4 border-primary border-t-transparent rounded-full" />
+      <div className="min-h-screen">
+        <header className="sticky top-0 z-50 bg-gradient-to-r from-primary to-primary/90 shadow-lg">
+          <div className="container mx-auto px-4 py-4">
+            <div className="h-12 bg-white/20 rounded animate-pulse" />
+          </div>
+        </header>
+        <div className="container mx-auto px-4 py-6">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            {[1, 2, 3, 4, 5, 6].map((i) => (
+              <FarmerCardSkeleton key={i} />
+            ))}
+          </div>
+        </div>
       </div>
     );
   }
 
   return (
-    <div className="min-h-screen bg-background">
+    <div className="min-h-screen bg-white" onTouchStart={handleTouchStart} onTouchMove={handleTouchMove} onTouchEnd={handleTouchEnd}>
       {/* Header */}
-      <header className="sticky top-0 z-50 bg-card border-b shadow-sm">
+      <header className="sticky top-0 z-50 bg-gradient-to-r from-primary to-primary/90 shadow-lg">
         <div className="container mx-auto px-4 py-4">
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-4">
               <Link href="/customer/settings">
-                <Button variant="ghost" size="icon">
+                <Button variant="ghost" size="icon" className="text-white hover:bg-white/20">
                   <Settings className="h-5 w-5" />
                 </Button>
               </Link>
               <div>
-                <h1 className="text-2xl font-bold text-primary">Melody</h1>
-                <p className="text-sm text-muted-foreground flex items-center gap-1">
+                <h1 className="text-2xl font-bold text-white">Melody</h1>
+                <p className="text-sm text-white/90 flex items-center gap-1">
                   <MapPin className="h-3 w-3" />
                   Hyderabad Area
                 </p>
@@ -417,35 +509,42 @@ export default function CustomerPage() {
             </div>
 
             <div className="flex items-center gap-2">
+              <Button
+                variant="ghost"
+                size="icon"
+                aria-label="Filters"
+                className="relative text-white hover:bg-white/20"
+                onClick={() => setShowFilters(!showFilters)}
+              >
+                <Filter className="h-5 w-5" />
+                {Object.values(filters).some((v) =>
+                  Array.isArray(v)
+                    ? v.length > 0
+                    : v !== "" && v !== false && v !== 0 && v !== 50 && v !== 1000
+                ) && (
+                  <span className="absolute -top-1 -right-1 h-4 w-4 bg-secondary rounded-full flex items-center justify-center text-xs text-white font-bold">
+                    !
+                  </span>
+                )}
+              </Button>
               <Link href="/customer/services">
                 <Button
                   variant="ghost"
                   size="icon"
                   aria-label="Open services"
-                  className="relative"
+                  className="relative text-white hover:bg-white/20"
                 >
                   <Users className="h-5 w-5" />
                 </Button>
               </Link>
-              <Link href="/customer/wishlist">
-                <Button variant="ghost" size="icon" className="relative">
-                  <Heart className="h-5 w-5" />
-                </Button>
-              </Link>
-              <Link href="/customer/cart">
-                <Button
-                  variant="default"
-                  size="icon"
-                  className="relative"
-                  aria-label="Open cart"
-                >
-                  <ShoppingCart className="h-5 w-5" />
-                  {cartSummary.itemCount > 0 && (
-                    <Badge className="absolute -top-2 -right-2 h-5 w-5 flex items-center justify-center p-0 bg-secondary">
-                      {cartSummary.itemCount}
-                    </Badge>
-                  )}
-                </Button>
+              <Link href="/customer/butcher">
+                <div className="w-9 h-9 rounded-full bg-white/20 backdrop-blur-sm flex items-center justify-center hover:bg-white/30 transition-all duration-300 cursor-pointer shadow-lg p-0.5 hover:shadow-[0_0_20px_rgba(255,248,220,0.8)]">
+                  <img 
+                    src="/butcher-icon.png" 
+                    alt="Butcher"
+                    className="w-[110%] h-[110%] object-contain drop-shadow-[0_0_12px_rgba(255,248,220,0.9)]"
+                  />
+                </div>
               </Link>
             </div>
           </div>
@@ -453,131 +552,16 @@ export default function CustomerPage() {
           {/* Search Bar and Filters */}
           <div className="mt-4 space-y-4">
             <div className="relative">
-              <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-5 w-5 text-muted-foreground" />
+              <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-5 w-5 text-muted-foreground z-10" />
               <Input
-                placeholder="Search for meat, milk, dairy products, vegetables..."
-                className="pl-10"
+                placeholder={placeholders[placeholderIndex]}
+                className="pl-10 bg-white border-white/20"
                 value={filters.keyword}
                 onChange={(e) =>
                   setFilters((prev) => ({ ...prev, keyword: e.target.value }))
                 }
               />
             </div>
-
-            {/* Filter Toggle */}
-            <Button
-              variant={showFilters ? "default" : "outline"}
-              onClick={() => setShowFilters(!showFilters)}
-              className={`w-full gap-2 ${
-                showFilters
-                  ? "bg-primary text-primary-foreground hover:bg-primary/90"
-                  : ""
-              }`}
-            >
-              <Filter className="h-4 w-4" />
-              {showFilters ? "Hide Filters" : "Show Filters"}
-              {Object.values(filters).some((v) =>
-                Array.isArray(v)
-                  ? v.length > 0
-                  : v !== "" && v !== false && v !== 0 && v !== 50 && v !== 1000
-              ) && (
-                <Badge variant="secondary" className="ml-2">
-                  Active
-                </Badge>
-              )}
-            </Button>
-
-            {/* Applied Filters Tags */}
-            {(filters.productTypes.length > 0 ||
-              filters.keyword ||
-              filters.nearbyOnly ||
-              filters.bulkOnly ||
-              filters.weightMin > 0 ||
-              filters.weightMax < 50 ||
-              filters.priceMin > 0 ||
-              filters.priceMax < 1000) && (
-              <div className="flex flex-wrap gap-2">
-                {filters.productTypes.map((type) => (
-                  <Badge key={type} variant="secondary" className="gap-1">
-                    {type}
-                    <X
-                      className="h-3 w-3 cursor-pointer"
-                      onClick={() =>
-                        setFilters((prev) => ({
-                          ...prev,
-                          productTypes: prev.productTypes.filter(
-                            (t) => t !== type
-                          ),
-                        }))
-                      }
-                    />
-                  </Badge>
-                ))}
-                {filters.keyword && (
-                  <Badge variant="secondary" className="gap-1">
-                    "{filters.keyword}"
-                    <X
-                      className="h-3 w-3 cursor-pointer"
-                      onClick={() =>
-                        setFilters((prev) => ({ ...prev, keyword: "" }))
-                      }
-                    />
-                  </Badge>
-                )}
-                {filters.nearbyOnly && (
-                  <Badge variant="secondary" className="gap-1">
-                    {"Nearby (<10km)"}
-                    <X
-                      className="h-3 w-3 cursor-pointer"
-                      onClick={() =>
-                        setFilters((prev) => ({ ...prev, nearbyOnly: false }))
-                      }
-                    />
-                  </Badge>
-                )}
-                {filters.bulkOnly && (
-                  <Badge variant="secondary" className="gap-1">
-                    Bulk Available
-                    <X
-                      className="h-3 w-3 cursor-pointer"
-                      onClick={() =>
-                        setFilters((prev) => ({ ...prev, bulkOnly: false }))
-                      }
-                    />
-                  </Badge>
-                )}
-                {(filters.weightMin > 0 || filters.weightMax < 50) && (
-                  <Badge variant="secondary" className="gap-1">
-                    Weight: {filters.weightMin}-{filters.weightMax}kg
-                    <X
-                      className="h-3 w-3 cursor-pointer"
-                      onClick={() =>
-                        setFilters((prev) => ({
-                          ...prev,
-                          weightMin: 0,
-                          weightMax: 50,
-                        }))
-                      }
-                    />
-                  </Badge>
-                )}
-                {(filters.priceMin > 0 || filters.priceMax < 1000) && (
-                  <Badge variant="secondary" className="gap-1">
-                    Price: ₹{filters.priceMin}-₹{filters.priceMax}
-                    <X
-                      className="h-3 w-3 cursor-pointer"
-                      onClick={() =>
-                        setFilters((prev) => ({
-                          ...prev,
-                          priceMin: 0,
-                          priceMax: 1000,
-                        }))
-                      }
-                    />
-                  </Badge>
-                )}
-              </div>
-            )}
 
             {/* Advanced Filters */}
             {showFilters && (
@@ -723,58 +707,73 @@ export default function CustomerPage() {
       </header>
 
       {/* Category Pills */}
-      <div className="border-b bg-card">
+      <div className="border-b bg-white shadow-sm">
         <div className="container mx-auto px-4 py-4">
-          <div className="flex gap-2 overflow-x-auto pb-2 scrollbar-hide">
+          <div className="flex gap-3 overflow-x-auto pb-2" style={{ scrollbarWidth: 'none', msOverflowStyle: 'none' }}>
+            <style jsx>{`
+              div::-webkit-scrollbar {
+                display: none;
+              }
+            `}</style>
             {categories.map((cat) => (
-              <Button
+              <button
                 key={cat.id}
-                variant={selectedCategory === cat.id ? "default" : "outline"}
                 onClick={() => setSelectedCategory(cat.id)}
-                className="flex-shrink-0 gap-2"
+                className={`flex-shrink-0 w-[90px] h-[100px] rounded-[16px] flex flex-col items-center justify-center gap-1.5 transition-all duration-300 ${
+                  selectedCategory === cat.id
+                    ? "border-2 border-[#16a34a] shadow-[0_0_20px_rgba(22,163,74,0.3)]"
+                    : "border-2 border-transparent shadow-[0_4px_12px_rgba(0,0,0,0.08)] hover:scale-105"
+                }`}
+                style={{ backgroundColor: cat.bgColor }}
               >
-                <cat.icon className="h-4 w-4" />
-                {cat.name}
-              </Button>
+                <div className="w-14 h-14 flex items-center justify-center overflow-hidden rounded-xl">
+                  <img 
+                    src={cat.image} 
+                    alt={cat.name}
+                    className="w-full h-full object-cover"
+                  />
+                </div>
+                <span className="text-xs font-medium text-center leading-tight px-1">
+                  {cat.name}
+                </span>
+              </button>
             ))}
           </div>
         </div>
       </div>
 
-      {/* Unique Feature - Butcher & Live Animal Facility */}
-      <div className="bg-primary/5 border-b">
+      {/* Promotional Banner */}
+      <div className="bg-white border-b">
         <div className="container mx-auto px-4 py-4">
-          <div className="flex items-center justify-center">
-            <div className="relative w-full max-w-5xl bg-card border-2 border-primary/20 rounded-lg shadow-sm p-4 flex items-center justify-center animate-float hover:scale-110 transition-transform duration-300">
-              <div className="text-center">
-                <h2 className="text-xl font-bold mb-1">
-                  Butcher Facility + Live Animal Delivery
-                </h2>
-                <p className="text-sm text-muted-foreground max-w-2xl">
-                  Unlike other platforms, we provide professional butcher
-                  services alongside live animal delivery to your doorstep.
-                </p>
-              </div>
-            </div>
+          <div className="relative w-full h-[200px] rounded-[20px] overflow-hidden shadow-[0_8px_20px_rgba(0,0,0,0.08)] group cursor-pointer hover:shadow-[0_12px_28px_rgba(0,0,0,0.12)] transition-shadow duration-300">
+            {bannerImages.map((image, index) => (
+              <img
+                key={index}
+                src={image}
+                alt={`Banner ${index + 1}`}
+                className="absolute inset-0 w-full h-full object-cover transition-opacity duration-1000"
+                style={{ opacity: currentBannerIndex === index ? 1 : 0 }}
+              />
+            ))}
           </div>
         </div>
       </div>
 
       {/* Trust Banner */}
-      <div className="bg-primary/5 border-b">
-        <div className="container mx-auto px-4 py-3">
+      <div className="bg-white border-b border-accent/30">
+        <div className="container mx-auto px-4 py-4">
           <div className="flex items-center justify-center gap-6 text-sm flex-wrap">
-            <div className="flex items-center gap-2">
-              <ShieldCheck className="h-4 w-4 text-primary" />
-              <span className="font-medium">Verified Farmers</span>
+            <div className="flex items-center gap-2 bg-white px-4 py-2 rounded-full shadow-sm">
+              <ShieldCheck className="h-5 w-5 text-accent" />
+              <span className="font-semibold text-accent">Verified Farmers</span>
             </div>
-            <div className="flex items-center gap-2">
-              <Video className="h-4 w-4 text-primary" />
-              <span className="font-medium">Video Verification</span>
+            <div className="flex items-center gap-2 bg-white px-4 py-2 rounded-full shadow-sm">
+              <Video className="h-5 w-5 text-primary" />
+              <span className="font-semibold text-primary">Video Verification</span>
             </div>
-            <div className="flex items-center gap-2">
-              <Truck className="h-4 w-4 text-primary" />
-              <span className="font-medium">Live Tracking</span>
+            <div className="flex items-center gap-2 bg-white px-4 py-2 rounded-full shadow-sm">
+              <Truck className="h-5 w-5 text-secondary" />
+              <span className="font-semibold text-secondary">Live Tracking</span>
             </div>
           </div>
         </div>
@@ -788,10 +787,24 @@ export default function CustomerPage() {
               ? "All Farmers"
               : categories.find((c) => c.id === selectedCategory)?.name}
           </h2>
-          <p className="text-sm text-muted-foreground">
-            {filteredFarmers.length} farmers available
-          </p>
+          <div className="flex items-center gap-2">
+            <p className="text-sm text-muted-foreground">
+              {filteredFarmers.length} farmers
+            </p>
+            <SortDropdown onSortChange={setSortBy} currentSort={sortBy} />
+          </div>
         </div>
+
+        <QuickFilters
+          onFilterChange={(filter) => {
+            setQuickFilters((prev) =>
+              prev.includes(filter)
+                ? prev.filter((f) => f !== filter)
+                : [...prev, filter]
+            );
+          }}
+          activeFilters={quickFilters}
+        />
 
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
           {filteredFarmers.length === 0 ? (
@@ -826,7 +839,7 @@ export default function CustomerPage() {
             filteredFarmers.map((farmer) => (
               <Card
                 key={farmer.id}
-                className="hover:shadow-lg transition-shadow overflow-hidden group cursor-pointer"
+                className="hover:shadow-xl transition-all duration-300 overflow-hidden group cursor-pointer bg-white border-2 border-gray-100 hover:border-primary/30 hover:scale-[1.02]"
                 onClick={() => {
                   const firstProduct = farmer.products[0];
                   router.push(`/customer/product?farmerId=${farmer.id}&productType=${encodeURIComponent(firstProduct.type)}&breed=${encodeURIComponent(firstProduct.breed)}`);
@@ -839,15 +852,30 @@ export default function CustomerPage() {
                     alt={farmer.name}
                     className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-300"
                   />
+                  <button
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      toggleFavorite(farmer.id.toString());
+                    }}
+                    className="absolute top-3 right-3 bg-white/90 hover:bg-white rounded-full p-2 transition-all"
+                  >
+                    <Heart
+                      className={`h-5 w-5 ${
+                        isFavorite(farmer.id.toString())
+                          ? "fill-red-500 text-red-500"
+                          : "text-gray-600"
+                      }`}
+                    />
+                  </button>
                   {farmer.verified && (
-                    <Badge className="absolute top-3 right-3 bg-accent text-accent-foreground gap-1">
+                    <Badge className="absolute bottom-3 right-3 bg-accent text-accent-foreground gap-1">
                       <ShieldCheck className="h-3 w-3" />
                       Verified
                     </Badge>
                   )}
                 </div>
 
-                <CardHeader className="pb-3">
+                <CardHeader className="pb-3 bg-gradient-to-b from-gray-50 to-white">
                   <div className="flex items-start justify-between">
                     <div>
                       <CardTitle className="text-lg">{farmer.name}</CardTitle>
@@ -865,9 +893,9 @@ export default function CustomerPage() {
                   </div>
                 </CardHeader>
 
-                <CardContent className="space-y-3">
+                <CardContent className="space-y-3 bg-white">
                   {farmer.products.map((product, idx) => (
-                    <div key={idx} className="border-t pt-3">
+                    <div key={idx} className="border-t pt-3 bg-gradient-to-b from-white to-gray-50/50 rounded-lg p-3 -mx-3">
                       <div className="flex items-start justify-between mb-2">
                         <div>
                           <p className="font-semibold text-foreground">
@@ -920,7 +948,7 @@ export default function CustomerPage() {
                         </div>
                       </div>
 
-                      <div className="flex gap-2">
+                      <div className="flex gap-2" onClick={(e) => e.stopPropagation()}>
                         <div className="flex-1 flex items-center justify-center gap-1">
                           {(() => {
                             const currentQuantity = getItemQuantity(
@@ -944,9 +972,10 @@ export default function CustomerPage() {
                                   size="sm"
                                   className="w-full"
                                   disabled={!canAdd}
-                                  onClick={async (e) => {
+                                  onClick={(e) => {
                                     e.stopPropagation();
-                                    const success = await addToCart({
+                                    console.log('Adding to cart:', product.type);
+                                    addToCart({
                                       farmerId: farmer.id.toString(),
                                       productType: product.type,
                                       breed: product.breed,
@@ -959,19 +988,6 @@ export default function CustomerPage() {
                                       minimumGuaranteedWeight:
                                         product.weightRangeMin,
                                     });
-                                    if (success) {
-                                      // Show success feedback
-                                      const button = document.activeElement as HTMLButtonElement;
-                                      if (button) {
-                                        const originalText = button.textContent;
-                                        button.textContent = "Added!";
-                                        button.style.backgroundColor = "#22c55e";
-                                        setTimeout(() => {
-                                          button.textContent = originalText;
-                                          button.style.backgroundColor = "";
-                                        }, 1000);
-                                      }
-                                    }
                                   }}
                                 >
                                   <ShoppingCart className="h-4 w-4 mr-1" />
@@ -981,7 +997,7 @@ export default function CustomerPage() {
                             }
 
                             return (
-                              <div className="flex items-center gap-1 bg-primary/10 rounded-md p-1">
+                              <div className="flex items-center gap-1 bg-primary/10 rounded-md p-1 w-full">
                                 <Button
                                   size="sm"
                                   variant="ghost"
@@ -989,6 +1005,7 @@ export default function CustomerPage() {
                                   disabled={!canDecrease}
                                   onClick={(e) => {
                                     e.stopPropagation();
+                                    console.log('Decreasing quantity');
                                     decreaseQuantityByProduct(
                                       farmer.id.toString(),
                                       product.type,
@@ -998,7 +1015,7 @@ export default function CustomerPage() {
                                 >
                                   <Minus className="h-4 w-4" />
                                 </Button>
-                                <span className="w-8 text-center font-semibold text-sm">
+                                <span className="flex-1 text-center font-semibold text-sm">
                                   {currentQuantity}
                                 </span>
                                 <Button
@@ -1008,6 +1025,7 @@ export default function CustomerPage() {
                                   disabled={!canIncrease}
                                   onClick={(e) => {
                                     e.stopPropagation();
+                                    console.log('Increasing quantity');
                                     increaseQuantityByProduct(
                                       farmer.id.toString(),
                                       product.type,
@@ -1032,29 +1050,65 @@ export default function CustomerPage() {
 
         {/* Bulk Order CTA */}
         {selectedCategory === "all" && (
-          <Card className="mt-8 bg-gradient-to-r from-secondary/10 via-primary/10 to-accent/10 border-2 border-primary/20">
-            <CardContent className="p-6 text-center">
-              <ShoppingCart className="h-12 w-12 mx-auto mb-3 text-primary" />
-              <h3 className="text-2xl font-bold mb-2">
+          <Card className="mt-8 border-0 shadow-luxury-lg overflow-hidden relative group">
+            <div className="absolute inset-0">
+              <img 
+                src="https://images.unsplash.com/photo-1519225421980-715cb0215aed?w=1200&h=600&fit=crop" 
+                alt="Function Hall"
+                className="w-full h-full object-cover"
+              />
+              <div className="absolute inset-0 bg-gradient-to-br from-primary/90 via-accent/85 to-primary/90" />
+            </div>
+            <CardContent className="p-10 md:p-12 text-center relative z-10">
+              <div className="inline-block px-6 py-2 bg-white/20 backdrop-blur-sm rounded-full mb-4">
+                <span className="text-white text-sm font-semibold tracking-wide flex items-center gap-2">
+                  <Calendar className="h-4 w-4" />
+                  PREMIUM BULK SERVICE
+                </span>
+              </div>
+              <h3 className="text-4xl md:text-5xl font-bold mb-4 text-white drop-shadow-lg">
                 Function Hall Bulk Orders
               </h3>
-              <p className="text-muted-foreground mb-4 max-w-2xl mx-auto">
+              <p className="text-white/95 mb-8 max-w-2xl mx-auto text-lg md:text-xl leading-relaxed">
                 Need 20-80kg of fresh meat for weddings, ceremonies or events?
                 Get special pricing with live cutting, video verification and
                 guaranteed delivery.
               </p>
+              <div className="flex flex-wrap items-center justify-center gap-6 mb-8">
+                <div className="flex items-center gap-2 text-white">
+                  <div className="w-10 h-10 rounded-full bg-white/20 backdrop-blur-sm flex items-center justify-center">
+                    <ShieldCheck className="h-5 w-5" />
+                  </div>
+                  <span className="font-medium">Verified Quality</span>
+                </div>
+                <div className="flex items-center gap-2 text-white">
+                  <div className="w-10 h-10 rounded-full bg-white/20 backdrop-blur-sm flex items-center justify-center">
+                    <Video className="h-5 w-5" />
+                  </div>
+                  <span className="font-medium">Live Cutting</span>
+                </div>
+                <div className="flex items-center gap-2 text-white">
+                  <div className="w-10 h-10 rounded-full bg-white/20 backdrop-blur-sm flex items-center justify-center">
+                    <Truck className="h-5 w-5" />
+                  </div>
+                  <span className="font-medium">Fast Delivery</span>
+                </div>
+              </div>
               <Link href="/customer/bulk">
                 <Button
                   size="lg"
-                  className="bg-secondary hover:bg-secondary/90"
+                  className="bg-white text-primary hover:bg-white/95 hover:scale-105 font-bold text-lg px-10 py-7 rounded-full shadow-2xl transition-all duration-300 group"
                 >
-                  Place Bulk Order
+                  <ShoppingCart className="h-5 w-5 mr-2 group-hover:animate-bounce" />
+                  Place Bulk Order Now
+                  <span className="ml-2 group-hover:translate-x-1 transition-transform">→</span>
                 </Button>
               </Link>
             </CardContent>
           </Card>
         )}
       </div>
+      <FloatingCartButton />
     </div>
   );
 }

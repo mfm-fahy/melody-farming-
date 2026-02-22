@@ -59,20 +59,21 @@ export default function AccountPage() {
   };
 
   return (
-    <div className="container mx-auto px-4 py-8 max-w-4xl">
-      <div className="mb-8">
-        <h1 className="text-3xl font-bold text-gray-900 mb-2">My Account</h1>
-        <p className="text-gray-600">
-          Manage your profile and account settings
-        </p>
-      </div>
-
-      <Tabs defaultValue="profile" className="space-y-6">
-        <TabsList className="grid w-full grid-cols-3">
-          <TabsTrigger value="profile">Profile</TabsTrigger>
-          <TabsTrigger value="orders">Orders</TabsTrigger>
-          <TabsTrigger value="settings">Settings</TabsTrigger>
-        </TabsList>
+    <div className="min-h-screen bg-white">
+      <header className="sticky top-0 z-50 bg-gradient-to-r from-primary to-primary/90 shadow-lg">
+        <div className="container mx-auto px-4 py-4">
+          <h1 className="text-2xl font-bold text-white">My Account</h1>
+          <p className="text-sm text-white/90">Manage your profile and account settings</p>
+        </div>
+      </header>
+      
+      <div className="container mx-auto px-4 py-8 max-w-4xl">
+        <Tabs defaultValue="profile" className="space-y-6">
+          <TabsList className="grid w-full grid-cols-3">
+            <TabsTrigger value="profile">Profile</TabsTrigger>
+            <TabsTrigger value="orders">Orders</TabsTrigger>
+            <TabsTrigger value="settings">Settings</TabsTrigger>
+          </TabsList>
 
         <TabsContent value="profile" className="space-y-6">
           {/* Profile Card */}
@@ -251,7 +252,8 @@ export default function AccountPage() {
             </CardContent>
           </Card>
         </TabsContent>
-      </Tabs>
+        </Tabs>
+      </div>
     </div>
   );
 }

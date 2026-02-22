@@ -26,6 +26,7 @@ import {
   Calendar,
   GraduationCap,
   HardHat,
+  Settings,
 } from "lucide-react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
@@ -67,44 +68,44 @@ export default function SettingsPage() {
 
   return (
     <div className="min-h-screen bg-background">
-      <header className="sticky top-0 z-50 bg-card border-b shadow-sm">
+      <header className="sticky top-0 z-50 bg-gradient-to-r from-primary to-primary/90 shadow-lg">
         <div className="container mx-auto px-4 py-4">
           <div className="flex items-center gap-4">
             <Link href="/customer">
-              <Button variant="ghost" size="icon">
+              <Button variant="ghost" size="icon" className="text-white hover:bg-white/20">
                 <ArrowLeft className="h-5 w-5" />
               </Button>
             </Link>
-            <h1 className="text-2xl font-bold">Settings & Profile</h1>
+            <h1 className="text-2xl font-bold text-white">Settings & Profile</h1>
           </div>
         </div>
       </header>
 
       <div className="container mx-auto px-4 py-6 max-w-2xl">
         {/* Profile Card */}
-        <Card className="mb-6">
-          <CardHeader>
+        <Card className="mb-6 bg-white border-2 border-gray-100 shadow-lg hover:shadow-xl transition-shadow">
+          <CardHeader className="bg-gradient-to-r from-gray-50 to-white pb-6">
             <div className="flex items-center gap-4">
-              <div className="w-16 h-16 rounded-full bg-primary/10 flex items-center justify-center">
-                <User className="h-8 w-8 text-primary" />
+              <div className="w-20 h-20 rounded-full bg-gradient-to-br from-primary to-primary/70 flex items-center justify-center shadow-md">
+                <User className="h-10 w-10 text-white" />
               </div>
-              <div>
-                <CardTitle>{user.name}</CardTitle>
-                <CardDescription className="flex items-center gap-2 mt-1">
-                  <Phone className="h-3 w-3" />
+              <div className="flex-1">
+                <CardTitle className="text-2xl">{user.name}</CardTitle>
+                <CardDescription className="flex items-center gap-2 mt-2 text-base">
+                  <Phone className="h-4 w-4" />
                   +91 {user.phone}
                 </CardDescription>
               </div>
             </div>
           </CardHeader>
-          <CardContent className="space-y-3">
-            <div className="flex items-start gap-2 text-sm">
-              <MapPin className="h-4 w-4 text-muted-foreground mt-0.5" />
-              <span className="text-muted-foreground">{user.address}</span>
+          <CardContent className="space-y-4 pt-6">
+            <div className="flex items-start gap-3 text-sm bg-gray-50 p-3 rounded-lg">
+              <MapPin className="h-5 w-5 text-primary mt-0.5 flex-shrink-0" />
+              <span className="text-gray-700">{user.address}</span>
             </div>
-            <div className="flex gap-2">
+            <div className="flex flex-wrap gap-2">
               {user.roles?.map((role: string) => (
-                <Badge key={role} variant="secondary" className="capitalize">
+                <Badge key={role} variant="secondary" className="capitalize px-3 py-1 text-sm">
                   {role}
                 </Badge>
               ))}
@@ -112,13 +113,13 @@ export default function SettingsPage() {
           </CardContent>
         </Card>
 
-        <Card className="mb-6 border-2 border-primary/20">
-          <CardHeader>
-            <CardTitle className="flex items-center gap-2">
-              <ShieldCheck className="h-5 w-5 text-primary" />
+        <Card className="mb-6 border-2 border-primary/30 bg-white shadow-lg">
+          <CardHeader className="bg-gradient-to-r from-primary/5 to-transparent">
+            <CardTitle className="flex items-center gap-2 text-xl">
+              <ShieldCheck className="h-6 w-6 text-primary" />
               Upgrade Your Account
             </CardTitle>
-            <CardDescription>
+            <CardDescription className="text-base mt-1">
               Expand your role to sell products or deliver orders
             </CardDescription>
           </CardHeader>
@@ -133,8 +134,8 @@ export default function SettingsPage() {
                   : "/farmer/kyc"
               }
             >
-              <Card className="hover:shadow-md transition-shadow cursor-pointer">
-                <CardContent className="p-4 flex items-center justify-between">
+              <Card className="hover:shadow-lg hover:scale-[1.01] transition-all cursor-pointer bg-white border-2 border-gray-100">
+                <CardContent className="p-5 flex items-center justify-between">
                   <div className="flex items-center gap-3">
                     <div className="w-12 h-12 rounded-lg bg-secondary/10 flex items-center justify-center">
                       <Sprout className="h-6 w-6 text-secondary" />
@@ -173,8 +174,8 @@ export default function SettingsPage() {
                   : "/driver/kyc"
               }
             >
-              <Card className="hover:shadow-md transition-shadow cursor-pointer">
-                <CardContent className="p-4 flex items-center justify-between">
+              <Card className="hover:shadow-lg hover:scale-[1.01] transition-all cursor-pointer bg-white border-2 border-gray-100">
+                <CardContent className="p-5 flex items-center justify-between">
                   <div className="flex items-center gap-3">
                     <div className="w-12 h-12 rounded-lg bg-accent/20 flex items-center justify-center">
                       <TruckIcon className="h-6 w-6 text-accent-foreground" />
@@ -213,8 +214,8 @@ export default function SettingsPage() {
                   : "/employer/kyc"
               }
             >
-              <Card className="hover:shadow-md transition-shadow cursor-pointer">
-                <CardContent className="p-4 flex items-center justify-between">
+              <Card className="hover:shadow-lg hover:scale-[1.01] transition-all cursor-pointer bg-white border-2 border-gray-100">
+                <CardContent className="p-5 flex items-center justify-between">
                   <div className="flex items-center gap-3">
                     <div className="w-12 h-12 rounded-lg bg-primary/10 flex items-center justify-center">
                       <Briefcase className="h-6 w-6 text-primary" />
@@ -251,8 +252,8 @@ export default function SettingsPage() {
                   : "/customer/settings/services/student/register"
               }
             >
-              <Card className="hover:shadow-md transition-shadow cursor-pointer">
-                <CardContent className="p-4 flex items-center justify-between">
+              <Card className="hover:shadow-lg hover:scale-[1.01] transition-all cursor-pointer bg-white border-2 border-gray-100">
+                <CardContent className="p-5 flex items-center justify-between">
                   <div className="flex items-center gap-3">
                     <div className="w-12 h-12 rounded-lg bg-green-500/10 flex items-center justify-center">
                       <GraduationCap className="h-6 w-6 text-green-600" />
@@ -278,8 +279,8 @@ export default function SettingsPage() {
 
             {/* Become a Worker */}
             <Link href="/customer/settings/services">
-              <Card className="hover:shadow-md transition-shadow cursor-pointer">
-                <CardContent className="p-4 flex items-center justify-between">
+              <Card className="hover:shadow-lg hover:scale-[1.01] transition-all cursor-pointer bg-white border-2 border-gray-100">
+                <CardContent className="p-5 flex items-center justify-between">
                   <div className="flex items-center gap-3">
                     <div className="w-12 h-12 rounded-lg bg-orange-500/10 flex items-center justify-center">
                       <HardHat className="h-6 w-6 text-orange-600" />
@@ -306,17 +307,19 @@ export default function SettingsPage() {
         </Card>
 
         {/* Other Settings */}
-        <Card className="mb-6">
-          <CardHeader>
-            <CardTitle>Account Settings</CardTitle>
+        <Card className="mb-6 bg-white border-2 border-gray-100 shadow-lg">
+          <CardHeader className="bg-gradient-to-r from-gray-50 to-white">
+            <CardTitle className="text-xl">Account Settings</CardTitle>
           </CardHeader>
           <CardContent className="space-y-3">
             <Link href="/customer/subscriptions">
-              <Card className="hover:shadow-md transition-shadow cursor-pointer">
-                <CardContent className="p-4 flex items-center justify-between">
+              <Card className="hover:shadow-lg hover:scale-[1.01] transition-all cursor-pointer bg-white border-2 border-gray-100">
+                <CardContent className="p-5 flex items-center justify-between">
                   <div className="flex items-center gap-3">
-                    <Calendar className="h-5 w-5 text-primary" />
-                    <span className="font-medium">My Plans</span>
+                    <div className="w-10 h-10 rounded-lg bg-primary/10 flex items-center justify-center">
+                      <Calendar className="h-5 w-5 text-primary" />
+                    </div>
+                    <span className="font-semibold">My Plans</span>
                   </div>
                   <ChevronRight className="h-5 w-5 text-muted-foreground" />
                 </CardContent>
@@ -324,11 +327,13 @@ export default function SettingsPage() {
             </Link>
 
             <Link href="/customer/wallet">
-              <Card className="hover:shadow-md transition-shadow cursor-pointer">
-                <CardContent className="p-4 flex items-center justify-between">
+              <Card className="hover:shadow-lg hover:scale-[1.01] transition-all cursor-pointer bg-white border-2 border-gray-100">
+                <CardContent className="p-5 flex items-center justify-between">
                   <div className="flex items-center gap-3">
-                    <Wallet className="h-5 w-5 text-primary" />
-                    <span className="font-medium">Wallet & Payments</span>
+                    <div className="w-10 h-10 rounded-lg bg-primary/10 flex items-center justify-center">
+                      <Wallet className="h-5 w-5 text-primary" />
+                    </div>
+                    <span className="font-semibold">Wallet & Payments</span>
                   </div>
                   <ChevronRight className="h-5 w-5 text-muted-foreground" />
                 </CardContent>
@@ -336,11 +341,27 @@ export default function SettingsPage() {
             </Link>
 
             <Link href="/customer/notifications">
-              <Card className="hover:shadow-md transition-shadow cursor-pointer">
-                <CardContent className="p-4 flex items-center justify-between">
+              <Card className="hover:shadow-lg hover:scale-[1.01] transition-all cursor-pointer bg-white border-2 border-gray-100">
+                <CardContent className="p-5 flex items-center justify-between">
                   <div className="flex items-center gap-3">
-                    <Bell className="h-5 w-5 text-primary" />
-                    <span className="font-medium">Notifications</span>
+                    <div className="w-10 h-10 rounded-lg bg-primary/10 flex items-center justify-center">
+                      <Bell className="h-5 w-5 text-primary" />
+                    </div>
+                    <span className="font-semibold">Notifications</span>
+                  </div>
+                  <ChevronRight className="h-5 w-5 text-muted-foreground" />
+                </CardContent>
+              </Card>
+            </Link>
+
+            <Link href="/admin">
+              <Card className="hover:shadow-lg hover:scale-[1.01] transition-all cursor-pointer border-2 border-primary/40 bg-gradient-to-r from-primary/5 to-transparent">
+                <CardContent className="p-5 flex items-center justify-between">
+                  <div className="flex items-center gap-3">
+                    <div className="w-10 h-10 rounded-lg bg-primary/20 flex items-center justify-center">
+                      <Settings className="h-5 w-5 text-primary" />
+                    </div>
+                    <span className="font-semibold">Admin Panel</span>
                   </div>
                   <ChevronRight className="h-5 w-5 text-muted-foreground" />
                 </CardContent>
@@ -352,7 +373,7 @@ export default function SettingsPage() {
         {/* Logout */}
         <Button
           variant="destructive"
-          className="w-full"
+          className="w-full shadow-lg hover:shadow-xl transition-all"
           size="lg"
           onClick={handleLogout}
         >

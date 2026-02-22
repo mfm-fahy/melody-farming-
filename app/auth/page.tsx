@@ -36,37 +36,18 @@ export default function AuthPage() {
     }
 
     setIsLoading(true);
+    await new Promise((resolve) => setTimeout(resolve, 500));
     
-    try {
-      const response = await fetch('/api/auth/send-otp', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({ phone }),
-      });
-
-      const data = await response.json();
-
-      if (data.success) {
-        const existingUser = localStorage.getItem(`melody_user_${phone}`);
-        if (mode === "login" && !existingUser) {
-          alert("Phone number not registered. Please register first.");
-          setMode("register");
-          setIsLoading(false);
-          return;
-        }
-        
-        setStep("otp");
-        alert(`OTP sent to +91${phone}`);
-      } else {
-        alert(data.error || 'Failed to send OTP');
-      }
-    } catch (error) {
-      console.error('Error sending OTP:', error);
-      alert('Failed to send OTP. Please try again.');
+    const existingUser = localStorage.getItem(`melody_user_${phone}`);
+    if (mode === "login" && !existingUser) {
+      alert("Phone number not registered. Please register first.");
+      setMode("register");
+      setIsLoading(false);
+      return;
     }
     
+    setStep("otp");
+    alert(`Demo Mode: Use any 6-digit OTP (e.g., 123456)`);
     setIsLoading(false);
   };
 
@@ -77,43 +58,25 @@ export default function AuthPage() {
     }
 
     setIsLoading(true);
+    await new Promise((resolve) => setTimeout(resolve, 500));
     
-    try {
-      const response = await fetch('/api/auth/verify-otp', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({ phone, otp }),
-      });
-
-      const data = await response.json();
-
-      if (data.success && data.verified) {
-        if (mode === "register") {
-          const existingUser = localStorage.getItem(`melody_user_${phone}`);
-          if (!existingUser) {
-            setStep("details");
-            setIsLoading(false);
-            return;
-          }
-        }
-
-        const userData = localStorage.getItem(`melody_user_${phone}`);
-        if (userData) {
-          localStorage.setItem("melody_current_user", userData);
-          router.push("/customer");
-        } else {
-          alert("User not found. Please register.");
-          setMode("register");
-          setStep("phone");
-        }
-      } else {
-        alert(data.error || 'Invalid OTP. Please try again.');
+    if (mode === "register") {
+      const existingUser = localStorage.getItem(`melody_user_${phone}`);
+      if (!existingUser) {
+        setStep("details");
+        setIsLoading(false);
+        return;
       }
-    } catch (error) {
-      console.error('Error verifying OTP:', error);
-      alert('Failed to verify OTP. Please try again.');
+    }
+
+    const userData = localStorage.getItem(`melody_user_${phone}`);
+    if (userData) {
+      localStorage.setItem("melody_current_user", userData);
+      router.push("/customer");
+    } else {
+      alert("User not found. Please register.");
+      setMode("register");
+      setStep("phone");
     }
     
     setIsLoading(false);
@@ -506,17 +469,16 @@ export default function AuthPage() {
             <div className="flex items-center justify-center gap-2 pt-4 border-t">
               <ShieldCheck className="h-4 w-4 text-green-600" />
               <span className="text-xs text-muted-foreground">
-                Secure Twilio OTP Authentication
+                Demo Mode - No Real SMS
               </span>
             </div>
           </CardContent>
         </Card>
 
-        <Card className="mt-4 bg-blue-500/10 border-blue-500/30">
+        <Card className="mt-4 bg-green-500/10 border-green-500/30">
           <CardContent className="p-4">
-            <p className="text-sm text-center text-blue-800">
-              <strong>Twilio OTP:</strong> Real SMS OTP will be sent to your phone number.
-              Make sure to enter a valid Indian mobile number.
+            <p className="text-sm text-center text-green-800">
+              <strong>Demo Mode:</strong> Enter any 10-digit phone number and use any 6-digit OTP (e.g., 123456) to login.
             </p>
           </CardContent>
         </Card>

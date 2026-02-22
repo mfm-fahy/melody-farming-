@@ -24,13 +24,23 @@ import {
   Sprout,
   Clock,
   ShieldCheck,
+  LogOut,
 } from "lucide-react";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 
 export default function AdminPage() {
+  const router = useRouter();
   const [selectedTab, setSelectedTab] = useState("overview");
   const [orders, setOrders] = useState([]);
   const [loading, setLoading] = useState(false);
+
+  useEffect(() => {
+    const isAuthenticated = localStorage.getItem("admin_authenticated");
+    if (!isAuthenticated) {
+      router.push("/admin/login");
+    }
+  }, [router]);
 
   useEffect(() => {
     if (selectedTab === "orders") {
@@ -200,7 +210,7 @@ export default function AdminPage() {
         <div className="container mx-auto px-4 py-4">
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-4">
-              <Link href="/">
+              <Link href="/customer">
                 <Button variant="ghost" size="icon">
                   <ArrowLeft className="h-5 w-5" />
                 </Button>
@@ -215,10 +225,24 @@ export default function AdminPage() {
                 </p>
               </div>
             </div>
-            <Badge className="bg-accent text-accent-foreground gap-1">
-              <ShieldCheck className="h-3 w-3" />
-              Super Admin
-            </Badge>
+            <div className="flex items-center gap-2">
+              <Badge className="bg-accent text-accent-foreground gap-1">
+                <ShieldCheck className="h-3 w-3" />
+                Super Admin
+              </Badge>
+              <Button
+                variant="outline"
+                size="sm"
+                onClick={() => {
+                  localStorage.removeItem("admin_authenticated");
+                  router.push("/admin/login");
+                }}
+                className="gap-2"
+              >
+                <LogOut className="h-4 w-4" />
+                Logout
+              </Button>
+            </div>
           </div>
         </div>
       </header>

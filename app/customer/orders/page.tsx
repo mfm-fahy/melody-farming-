@@ -172,22 +172,22 @@ export default function OrdersPage() {
   }
 
   return (
-    <div className="min-h-screen bg-background">
+    <div className="min-h-screen bg-white">
       {/* Header */}
-      <header className="bg-card border-b shadow-sm sticky top-0 z-50">
+      <header className="sticky top-0 z-50 bg-gradient-to-r from-primary to-primary/90 shadow-lg">
         <div className="container mx-auto px-4 py-4">
           <div className="flex flex-col sm:flex-row items-start sm:items-center gap-2 sm:gap-4">
             <Link href="/customer">
-              <Button variant="ghost" size="icon">
+              <Button variant="ghost" size="icon" className="text-white hover:bg-white/20">
                 <ArrowLeft className="h-5 w-5" />
               </Button>
             </Link>
             <div>
-              <h1 className="text-xl font-bold flex items-center gap-2">
-                <Package className="h-5 w-5 text-primary" />
+              <h1 className="text-xl font-bold text-white flex items-center gap-2">
+                <Package className="h-5 w-5" />
                 My Orders
               </h1>
-              <p className="text-sm text-muted-foreground">
+              <p className="text-sm text-white/90">
                 Track and manage your orders
               </p>
             </div>

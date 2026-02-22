@@ -223,12 +223,13 @@ export default function CartPage() {
   return (
     <div className="min-h-screen bg-background">
       {/* Header */}
-      <header className="bg-card border-b shadow-sm sticky top-0 z-50">
+      <header className="sticky top-0 z-50 bg-gradient-to-r from-primary to-primary/90 shadow-lg">
         <div className="container mx-auto px-4 py-4">
           <div className="flex items-center gap-4">
             <Button
               variant="ghost"
               size="icon"
+              className="text-white hover:bg-white/20"
               onClick={() =>
                 step === "cart" ? router.push("/customer") : setStep("cart")
               }
@@ -236,13 +237,13 @@ export default function CartPage() {
               <ArrowLeft className="h-5 w-5" />
             </Button>
             <div>
-              <h1 className="text-xl font-bold flex items-center gap-2">
-                <ShoppingCart className="h-5 w-5 text-primary" />
+              <h1 className="text-xl font-bold text-white flex items-center gap-2">
+                <ShoppingCart className="h-5 w-5" />
                 {step === "cart" && "Shopping Cart"}
                 {step === "address" && "Delivery Address"}
                 {step === "payment" && "Payment"}
               </h1>
-              <p className="text-sm text-muted-foreground">
+              <p className="text-sm text-white/90">
                 {cartItems.length} {cartItems.length === 1 ? "item" : "items"}
               </p>
             </div>
