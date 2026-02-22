@@ -14,8 +14,14 @@ export default function LandingPage() {
   return (
     <div className="min-h-screen">
       {/* Hero Section with Stunning Farm Background */}
-      <div className="relative min-h-screen flex items-center justify-center bg-[url('/images/corn-field-sunset.jpeg')] bg-cover bg-center">
-        <div className="absolute inset-0 bg-gradient-to-b from-black/70 via-black/50 to-black/80" />
+      <div className="relative min-h-screen flex items-center justify-center">
+        <div 
+          className="absolute inset-0 bg-cover bg-center"
+          style={{
+            backgroundImage: "url('https://images.unsplash.com/photo-1500382017468-9049fed747ef?q=80&w=7680&auto=format&fit=crop')",
+          }}
+        />
+        <div className="absolute inset-0 bg-gradient-to-b from-black/75 via-black/60 to-black/85" />
 
         {/* Content */}
         <div className="relative z-10 container mx-auto px-4 py-16">
