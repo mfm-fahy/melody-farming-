@@ -2,214 +2,248 @@
 
 import { useState } from "react"
 import Link from "next/link"
-import { ArrowLeft, Users, Building2, TrendingDown, CheckCircle, Plus } from "lucide-react"
+import { ArrowLeft, Milk, Beef, Carrot, Calendar, CheckCircle } from "lucide-react"
 import { Button } from "@/components/ui/button"
-import { Card } from "@/components/ui/card"
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog"
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
+import { RazorpayPaymentModal } from "@/components/razorpay-payment-modal"
 
-export default function ApartmentBookingPage() {
-  const [groupOrders] = useState([
-    {
-      id: 1,
-      apartmentName: "Green Valley Apartments",
-      families: 12,
-      totalAmount: 8400,
-      discount: 1260,
-      finalAmount: 7140,
-      status: "active",
-      nextDelivery: "Saturday, 8:00 AM",
-    },
+export default function ApartmentSubscriptionPage() {
+  const [step, setStep] = useState<"form" | "confirmation">("form")
+  const [showPaymentModal, setShowPaymentModal] = useState(false)
+  const [selectedSubscription, setSelectedSubscription] = useState<any>(null)
+  const [subscriptions, setSubscriptions] = useState([
+    { id: 1, type: "milk", product: "Buffalo Milk", quantity: "1L", frequency: "Daily", price: 60, active: true },
   ])
 
-  return (
-    <div className="min-h-screen bg-gradient-to-br from-green-50 via-cream to-green-50">
-      {/* Header */}
-      <header className="sticky top-0 z-50 bg-white/95 backdrop-blur border-b border-green-100 shadow-sm">
-        <div className="container mx-auto px-4 py-4">
-          <div className="flex items-center justify-between">
-            <div className="flex items-center gap-4">
-              <Link href="/customer">
-                <Button variant="ghost" size="icon" className="hover:bg-green-50">
-                  <ArrowLeft className="w-5 h-5" />
-                </Button>
-              </Link>
-              <div>
-                <h1 className="text-2xl font-bold text-farm-green">Apartment Group Booking</h1>
-                <p className="text-sm text-muted-foreground">Save more when 10+ families order together</p>
-              </div>
-            </div>
+  const subscriptionOptions = [
+    { 
+      type: "milk", 
+      icon: Milk, 
+      title: "Milk Subscription", 
+      description: "Daily fresh milk delivery",
+      frequency: "Daily",
+      products: ["Buffalo Milk - 1L (₹60)", "Cow Milk - 1L (₹55)"],
+      color: "from-blue-50 to-blue-100"
+    },
+    { 
+      type: "vegetables", 
+      icon: Carrot, 
+      title: "Vegetables Subscription", 
+      description: "Weekly fresh vegetables",
+      frequency: "Weekly",
+      products: ["Mixed Vegetables - 5kg (₹200)", "Leafy Greens - 2kg (₹80)"],
+      color: "from-green-50 to-green-100"
+    },
+    { 
+      type: "meat", 
+      icon: Beef, 
+      title: "Meat Subscription", 
+      description: "Weekly fresh meat delivery",
+      frequency: "Weekly",
+      products: ["Chicken - 1kg (₹350)", "Mutton - 1kg (₹650)"],
+      color: "from-orange-50 to-orange-100"
+    },
+  ]
 
-            <Dialog>
-              <DialogTrigger asChild>
-                <Button className="bg-farm-green hover:bg-farm-green/90">
-                  <Plus className="w-4 h-4 mr-2" />
-                  Create Group
-                </Button>
-              </DialogTrigger>
-              <DialogContent>
-                <DialogHeader>
-                  <DialogTitle>Create Apartment Group Order</DialogTitle>
-                </DialogHeader>
-                <div className="space-y-4 pt-4">
-                  <div>
-                    <Label>Apartment Name</Label>
-                    <Input placeholder="e.g., Green Valley Apartments" />
-                  </div>
-                  <div>
-                    <Label>Number of Families</Label>
-                    <Input type="number" placeholder="Minimum 10 families" />
-                  </div>
-                  <div>
-                    <Label>Delivery Address</Label>
-                    <Input placeholder="Gate/Common area" />
-                  </div>
-                  <div>
-                    <Label>Preferred Day & Time</Label>
-                    <Input type="datetime-local" />
-                  </div>
-                  <Button className="w-full bg-farm-green hover:bg-farm-green/90">
-                    Create Group - Get 15% Discount
-                  </Button>
-                </div>
-              </DialogContent>
-            </Dialog>
+  const handleSubscribe = (option: any) => {
+    setSelectedSubscription(option)
+    setShowPaymentModal(true)
+  }
+
+  const handlePaymentSuccess = (paymentId: string) => {
+    console.log("Subscription payment successful:", paymentId)
+    setShowPaymentModal(false)
+    setStep("confirmation")
+  }
+
+  return (
+    <div className="min-h-screen bg-white">
+      <header className="sticky top-0 z-50 bg-gradient-to-r from-primary to-primary/90 shadow-lg">
+        <div className="container mx-auto px-4 py-4">
+          <div className="flex items-center gap-4">
+            <Link href="/customer">
+              <Button variant="ghost" size="icon" className="text-white hover:bg-white/20">
+                <ArrowLeft className="h-5 w-5" />
+              </Button>
+            </Link>
+            <div>
+              <h1 className="text-2xl font-bold text-white">Apartment Subscription</h1>
+              <p className="text-sm text-white/90">Subscribe for daily/weekly deliveries</p>
+            </div>
           </div>
         </div>
       </header>
 
-      <div className="container mx-auto px-4 py-8 max-w-6xl">
-        {/* Benefits Banner */}
-        <Card className="p-6 mb-8 bg-gradient-to-r from-blue-500 to-indigo-600 text-white">
-          <div className="flex items-start gap-4">
-            <Building2 className="w-12 h-12" />
-            <div className="flex-1">
-              <h2 className="text-xl font-bold mb-2">Apartment Group Benefits</h2>
-              <div className="grid md:grid-cols-3 gap-4 text-sm">
-                <div>
-                  <div className="font-semibold">Save 15%</div>
-                  <div className="opacity-90">Bulk discount for 10+ families</div>
-                </div>
-                <div>
-                  <div className="font-semibold">One Delivery</div>
-                  <div className="opacity-90">Combined delivery to gate/common area</div>
-                </div>
-                <div>
-                  <div className="font-semibold">Priority Service</div>
-                  <div className="opacity-90">Preferred time slot & faster delivery</div>
+      <div className="container mx-auto px-4 py-6 max-w-4xl">
+        {step === "form" && (
+          <>
+            {/* Active Subscriptions */}
+            {subscriptions.length > 0 && (
+              <div className="mb-8">
+                <h2 className="text-xl font-bold mb-4">Active Subscriptions</h2>
+                <div className="space-y-3">
+                  {subscriptions.map((sub) => (
+                    <Card key={sub.id} className="border-2 border-green-200">
+                      <CardContent className="p-4 flex items-center justify-between">
+                        <div>
+                          <p className="font-bold">{sub.product}</p>
+                          <p className="text-sm text-muted-foreground">{sub.quantity} • {sub.frequency}</p>
+                        </div>
+                        <div className="text-right">
+                          <p className="font-bold text-primary">₹{sub.price}/{sub.frequency === "Daily" ? "day" : "week"}</p>
+                          <Badge className="bg-green-500">Active</Badge>
+                        </div>
+                      </CardContent>
+                    </Card>
+                  ))}
                 </div>
               </div>
-            </div>
-          </div>
-        </Card>
+            )}
 
-        {/* How It Works */}
-        <Card className="p-6 mb-8">
-          <h2 className="text-xl font-bold mb-4">How Apartment Group Booking Works</h2>
-          <div className="grid md:grid-cols-4 gap-4">
-            {[
-              { step: 1, title: "Create Group", desc: "Start a group order for your apartment" },
-              { step: 2, title: "Invite Neighbors", desc: "Share code with 10+ families" },
-              { step: 3, title: "Place Orders", desc: "Each family adds their items" },
-              { step: 4, title: "Get Delivery", desc: "One combined delivery with 15% off" },
-            ].map((item) => (
-              <div key={item.step} className="text-center">
-                <div className="w-12 h-12 rounded-full bg-farm-green text-white font-bold text-xl flex items-center justify-center mx-auto mb-2">
-                  {item.step}
-                </div>
-                <h3 className="font-semibold mb-1">{item.title}</h3>
-                <p className="text-sm text-muted-foreground">{item.desc}</p>
-              </div>
-            ))}
-          </div>
-        </Card>
-
-        {/* Active Group Orders */}
-        <div className="mb-8">
-          <h2 className="text-xl font-bold mb-4 flex items-center gap-2">
-            <Users className="w-5 h-5 text-farm-green" />
-            Your Group Orders ({groupOrders.length})
-          </h2>
-          <div className="space-y-4">
-            {groupOrders.map((order) => (
-              <Card key={order.id} className="p-6">
-                <div className="flex items-start justify-between mb-4">
-                  <div>
-                    <h3 className="font-bold text-lg flex items-center gap-2">
-                      {order.apartmentName}
-                      <Badge className="bg-green-500">Active</Badge>
-                    </h3>
-                    <p className="text-sm text-muted-foreground flex items-center gap-1 mt-1">
-                      <Users className="w-4 h-4" />
-                      {order.families} families participating
-                    </p>
-                  </div>
-                  <Button variant="outline">Manage Group</Button>
-                </div>
-
-                <div className="grid md:grid-cols-4 gap-4 mb-4">
-                  <div className="text-center p-4 bg-gray-50 rounded-lg">
-                    <div className="text-2xl font-bold text-gray-400 line-through">₹{order.totalAmount}</div>
-                    <div className="text-xs text-muted-foreground">Original</div>
-                  </div>
-                  <div className="text-center p-4 bg-green-50 rounded-lg">
-                    <div className="text-2xl font-bold text-green-600">-₹{order.discount}</div>
-                    <div className="text-xs text-muted-foreground">Group Discount (15%)</div>
-                  </div>
-                  <div className="text-center p-4 bg-farm-green/10 rounded-lg">
-                    <div className="text-2xl font-bold text-farm-green">₹{order.finalAmount}</div>
-                    <div className="text-xs text-muted-foreground">Final Amount</div>
-                  </div>
-                  <div className="text-center p-4 bg-blue-50 rounded-lg">
-                    <div className="text-lg font-bold text-blue-600">
-                      ₹{Math.round(order.finalAmount / order.families)}
+            {/* Subscription Options */}
+            <h2 className="text-xl font-bold mb-4">Available Subscriptions</h2>
+            <div className="space-y-4">
+              {subscriptionOptions.map((option) => (
+                <Card key={option.type} className={`hover:shadow-xl transition-all bg-gradient-to-r ${option.color} border-2`}>
+                  <CardHeader>
+                    <div className="flex items-center gap-4">
+                      <div className="w-16 h-16 rounded-2xl bg-gradient-to-br from-green-200 to-green-300 flex items-center justify-center shadow-lg">
+                        <option.icon className="h-8 w-8 text-green-700" />
+                      </div>
+                      <div className="flex-1">
+                        <CardTitle className="text-xl">{option.title}</CardTitle>
+                        <p className="text-sm text-muted-foreground">{option.description}</p>
+                        <Badge className="mt-2">{option.frequency} Delivery</Badge>
+                      </div>
                     </div>
-                    <div className="text-xs text-muted-foreground">Per Family (Avg)</div>
-                  </div>
-                </div>
+                  </CardHeader>
+                  <CardContent className="space-y-4">
+                    <div>
+                      <Label className="text-sm font-semibold mb-2 block">Select Product</Label>
+                      <Select>
+                        <SelectTrigger className="bg-white">
+                          <SelectValue placeholder="Choose product" />
+                        </SelectTrigger>
+                        <SelectContent>
+                          {option.products.map((product, idx) => (
+                            <SelectItem key={idx} value={product}>{product}</SelectItem>
+                          ))}
+                        </SelectContent>
+                      </Select>
+                    </div>
 
-                <div className="flex items-center justify-between p-4 bg-blue-50 rounded-lg">
-                  <div className="flex items-center gap-2">
-                    <CheckCircle className="w-5 h-5 text-farm-green" />
-                    <span className="font-semibold">Next Delivery:</span>
-                  </div>
-                  <span className="text-farm-green font-bold">{order.nextDelivery}</span>
-                </div>
-              </Card>
-            ))}
-          </div>
-        </div>
+                    <div>
+                      <Label className="text-sm font-semibold mb-2 block">Quantity</Label>
+                      <Input type="number" min="1" defaultValue="1" className="bg-white" />
+                    </div>
 
-        {/* Example Savings */}
-        <Card className="p-6 bg-gradient-to-br from-green-50 to-blue-50 border-2 border-green-200">
-          <div className="flex items-start gap-4">
-            <TrendingDown className="w-12 h-12 text-farm-green" />
-            <div>
-              <h3 className="font-bold text-lg mb-2">Example: 10 Families Ordering Together</h3>
-              <div className="space-y-2 text-sm">
+                    <div>
+                      <Label className="text-sm font-semibold mb-2 block">Start Date</Label>
+                      <Input type="date" className="bg-white" />
+                    </div>
+
+                    <Button className="w-full shadow-lg hover:shadow-xl" size="lg" onClick={() => handleSubscribe(option)}>
+                      <CheckCircle className="h-5 w-5 mr-2" />
+                      Subscribe Now
+                    </Button>
+                  </CardContent>
+                </Card>
+              ))}
+            </div>
+
+            {/* Benefits */}
+            <Card className="mt-8 bg-gradient-to-r from-primary/5 to-secondary/5 border-2 border-primary/20">
+              <CardContent className="p-6">
+                <h3 className="font-bold text-lg mb-4 flex items-center gap-2">
+                  <Calendar className="h-5 w-5 text-primary" />
+                  Subscription Benefits
+                </h3>
+                <ul className="space-y-2 text-sm">
+                  <li className="flex items-center gap-2">
+                    <CheckCircle className="h-4 w-4 text-green-600" />
+                    <span>Never run out of essentials</span>
+                  </li>
+                  <li className="flex items-center gap-2">
+                    <CheckCircle className="h-4 w-4 text-green-600" />
+                    <span>Scheduled deliveries at your convenience</span>
+                  </li>
+                  <li className="flex items-center gap-2">
+                    <CheckCircle className="h-4 w-4 text-green-600" />
+                    <span>Pause or cancel anytime</span>
+                  </li>
+                  <li className="flex items-center gap-2">
+                    <CheckCircle className="h-4 w-4 text-green-600" />
+                    <span>Fresh products directly from farmers</span>
+                  </li>
+                </ul>
+              </CardContent>
+            </Card>
+          </>
+        )}
+
+        {step === "confirmation" && (
+          <Card className="border-2 border-green-500/30">
+            <CardContent className="p-8 text-center space-y-6">
+              <div className="w-20 h-20 mx-auto bg-green-500/10 rounded-full flex items-center justify-center">
+                <CheckCircle className="h-12 w-12 text-green-600" />
+              </div>
+
+              <div>
+                <h2 className="text-2xl font-bold mb-2">Subscription Activated!</h2>
+                <p className="text-muted-foreground">Subscription ID: SUB-{Math.floor(Math.random() * 10000)}</p>
+              </div>
+
+              <div className="bg-muted/50 rounded-lg p-6 text-left space-y-3">
                 <div className="flex justify-between">
-                  <span>Each family orders ₹700 worth products</span>
-                  <span className="font-semibold">₹7,000 total</span>
+                  <span className="text-sm text-muted-foreground">Subscription:</span>
+                  <span className="font-bold">{selectedSubscription?.title}</span>
                 </div>
-                <div className="flex justify-between text-green-600">
-                  <span>15% Group Discount</span>
-                  <span className="font-semibold">- ₹1,050</span>
+                <div className="flex justify-between">
+                  <span className="text-sm text-muted-foreground">Frequency:</span>
+                  <span className="font-semibold">{selectedSubscription?.frequency}</span>
                 </div>
-                <div className="flex justify-between text-lg font-bold text-farm-green pt-2 border-t">
-                  <span>Final Amount</span>
-                  <span>₹5,950</span>
-                </div>
-                <div className="flex justify-between text-blue-600">
-                  <span>Per Family Savings</span>
-                  <span className="font-semibold">₹105 each!</span>
+                <div className="flex justify-between">
+                  <span className="text-sm text-muted-foreground">Status:</span>
+                  <Badge className="bg-green-500">Active</Badge>
                 </div>
               </div>
-            </div>
-          </div>
-        </Card>
+
+              <div className="bg-blue-500/10 border border-blue-500/30 rounded-lg p-4 text-left">
+                <p className="text-sm font-medium text-blue-900 mb-2">What's Next?</p>
+                <ul className="text-xs text-blue-800 space-y-1">
+                  <li>✓ First delivery will start from selected date</li>
+                  <li>✓ You'll receive SMS/WhatsApp before each delivery</li>
+                  <li>✓ Pause or modify subscription anytime</li>
+                  <li>✓ Fresh products directly from verified farmers</li>
+                </ul>
+              </div>
+
+              <Link href="/customer">
+                <Button className="w-full bg-primary hover:bg-primary/90">
+                  Back to Home
+                </Button>
+              </Link>
+            </CardContent>
+          </Card>
+        )}
       </div>
+
+      {/* Razorpay Payment Modal */}
+      <RazorpayPaymentModal
+        isOpen={showPaymentModal}
+        onClose={() => setShowPaymentModal(false)}
+        amount={100}
+        orderDetails={{
+          orderId: `SUB-${Math.floor(Math.random() * 10000)}`,
+          description: selectedSubscription?.title || "Subscription",
+          name: "Apartment Subscription",
+        }}
+        onSuccess={handlePaymentSuccess}
+      />
     </div>
   )
 }

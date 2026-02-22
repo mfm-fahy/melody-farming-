@@ -137,8 +137,8 @@ export default function SettingsPage() {
               <Card className="hover:shadow-lg hover:scale-[1.01] transition-all cursor-pointer bg-white border-2 border-gray-100">
                 <CardContent className="p-5 flex items-center justify-between">
                   <div className="flex items-center gap-3">
-                    <div className="w-12 h-12 rounded-lg bg-secondary/10 flex items-center justify-center">
-                      <Sprout className="h-6 w-6 text-secondary" />
+                    <div className="w-12 h-12 rounded-lg bg-green-500/10 flex items-center justify-center">
+                      <Sprout className="h-6 w-6 text-green-600" />
                     </div>
                     <div>
                       <p className="font-semibold">Become a Farmer</p>
@@ -177,8 +177,8 @@ export default function SettingsPage() {
               <Card className="hover:shadow-lg hover:scale-[1.01] transition-all cursor-pointer bg-white border-2 border-gray-100">
                 <CardContent className="p-5 flex items-center justify-between">
                   <div className="flex items-center gap-3">
-                    <div className="w-12 h-12 rounded-lg bg-accent/20 flex items-center justify-center">
-                      <TruckIcon className="h-6 w-6 text-accent-foreground" />
+                    <div className="w-12 h-12 rounded-lg bg-blue-500/10 flex items-center justify-center">
+                      <TruckIcon className="h-6 w-6 text-blue-600" />
                     </div>
                     <div>
                       <p className="font-semibold">Become a Driver</p>
@@ -217,8 +217,8 @@ export default function SettingsPage() {
               <Card className="hover:shadow-lg hover:scale-[1.01] transition-all cursor-pointer bg-white border-2 border-gray-100">
                 <CardContent className="p-5 flex items-center justify-between">
                   <div className="flex items-center gap-3">
-                    <div className="w-12 h-12 rounded-lg bg-primary/10 flex items-center justify-center">
-                      <Briefcase className="h-6 w-6 text-primary" />
+                    <div className="w-12 h-12 rounded-lg bg-purple-500/10 flex items-center justify-center">
+                      <Briefcase className="h-6 w-6 text-purple-600" />
                     </div>
                     <div>
                       <p className="font-semibold">Become an Employer</p>

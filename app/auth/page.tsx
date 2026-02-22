@@ -470,17 +470,9 @@ export default function AuthPage() {
             <div className="flex items-center justify-center gap-2 pt-4 border-t">
               <ShieldCheck className="h-4 w-4 text-green-600" />
               <span className="text-xs text-muted-foreground">
-                Demo Mode - No Real SMS
+                Secure Authentication
               </span>
             </div>
-          </CardContent>
-        </Card>
-
-        <Card className="mt-4 bg-green-500/10 border-green-500/30">
-          <CardContent className="p-4">
-            <p className="text-sm text-center text-green-800">
-              <strong>Demo Mode:</strong> Enter any 10-digit phone number and use any 6-digit OTP (e.g., 123456) to login.
-            </p>
           </CardContent>
         </Card>
       </div>

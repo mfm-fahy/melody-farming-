@@ -150,10 +150,10 @@ export default function CustomerPage() {
   ];
 
   const byProducts = [
-    { id: "dried-meat", name: "Dried Meat", image: "https://images.unsplash.com/photo-1607623814075-e51df1bdc82f?w=400&h=300&fit=crop", bgColor: "#fef3c7" },
-    { id: "dried-veg", name: "Dried Vegetables", image: "https://images.unsplash.com/photo-1566385101042-1a0aa0c1268c?w=400&h=300&fit=crop", bgColor: "#dcfce7" },
-    { id: "groundnut", name: "Groundnut Haulms", image: "https://images.unsplash.com/photo-1589927986089-35812388d1f4?w=400&h=300&fit=crop", bgColor: "#f3e8ff" },
-    { id: "eggs", name: "Country Eggs", image: "https://images.unsplash.com/photo-1582722872445-44dc5f7e3c8f?w=400&h=300&fit=crop", bgColor: "#ffedd5" },
+    { id: "dried-meat", name: "Dried Meat", image: "https://images.unsplash.com/photo-1607623814075-e51df1bdc82f?w=400&h=300&fit=crop", bgColor: "#d1f4e0" },
+    { id: "dried-veg", name: "Dried Vegetables", image: "https://images.unsplash.com/photo-1566385101042-1a0aa0c1268c?w=400&h=300&fit=crop", bgColor: "#d1f4e0" },
+    { id: "groundnut", name: "Groundnut Haulms", image: "https://images.unsplash.com/photo-1560493676-04071c5f467b?w=400&h=300&fit=crop", bgColor: "#d1f4e0" },
+    { id: "eggs", name: "Country Eggs", image: "https://images.unsplash.com/photo-1582722872445-44dc5f7e3c8f?w=400&h=300&fit=crop", bgColor: "#d1f4e0" },
   ];
 
   const categories = [
@@ -185,7 +185,7 @@ export default function CustomerPage() {
             weightRangeMax: 28,
             age: "8 months",
             available: 8,
-            price: 22000,
+            price: 650,
             category: "mutton",
             bulkAvailable: true,
           },
@@ -196,12 +196,12 @@ export default function CustomerPage() {
             weightRangeMax: 1,
             age: "Daily Fresh",
             available: 25,
-            price: 750,
+            price: 650,
             category: "mutton",
             bulkAvailable: false,
           },
         ],
-        image: "https://images.unsplash.com/photo-1516467508483-a7212febe31a?w=800&h=600&fit=crop",
+        image: "/healthy-goat-farm-india.jpg",
       },
       {
         id: 2,
@@ -219,12 +219,12 @@ export default function CustomerPage() {
             weightRangeMax: 1.8,
             age: "6 months",
             available: 25,
-            price: 420,
+            price: 350,
             category: "chicken",
             bulkAvailable: false,
           },
         ],
-        image: "https://images.unsplash.com/photo-1548550023-2bdb3c5beed7?w=800&h=600&fit=crop",
+        image: "/desi-country-chicken-farm.jpg",
       },
       {
         id: 3,
@@ -236,18 +236,18 @@ export default function CustomerPage() {
         location: { lat: 17.2345, lng: 78.5678 },
         products: [
           {
-            type: "Buffalo Milk",
-            breed: "Murrah Buffalo",
+            type: "Cow Milk",
+            breed: "Desi Cow",
             weightRangeMin: 1,
             weightRangeMax: 1,
             age: "Fresh Daily",
             available: 50,
-            price: 65,
+            price: 60,
             category: "milk",
             bulkAvailable: true,
           },
         ],
-        image: "https://images.unsplash.com/photo-1563636619-e9143da7973b?w=800&h=600&fit=crop",
+        image: "/dairy-buffalo-milk-farm.jpg",
       },
       {
         id: 4,
@@ -265,12 +265,12 @@ export default function CustomerPage() {
             weightRangeMax: 1,
             age: "Fresh Harvest",
             available: 100,
-            price: 45,
+            price: 40,
             category: "vegetables",
             bulkAvailable: false,
           },
         ],
-        image: "https://images.unsplash.com/photo-1464226184884-fa280b87c399?w=800&h=600&fit=crop",
+        image: "/organic-vegetable-farm-india.jpg",
       },
       {
         id: 6,
@@ -288,7 +288,7 @@ export default function CustomerPage() {
             weightRangeMax: 5,
             age: "Fresh Made",
             available: 30,
-            price: 850,
+            price: 600,
             category: "dairy",
             bulkAvailable: true,
           },
@@ -299,7 +299,7 @@ export default function CustomerPage() {
             weightRangeMax: 2,
             age: "Daily Fresh",
             available: 50,
-            price: 320,
+            price: 400,
             category: "dairy",
             bulkAvailable: false,
           },
@@ -310,7 +310,7 @@ export default function CustomerPage() {
             weightRangeMax: 5,
             age: "Daily Fresh",
             available: 40,
-            price: 180,
+            price: 70,
             category: "dairy",
             bulkAvailable: true,
           },
@@ -321,12 +321,12 @@ export default function CustomerPage() {
             weightRangeMax: 1,
             age: "Aged 2 weeks",
             available: 25,
-            price: 450,
+            price: 500,
             category: "dairy",
             bulkAvailable: false,
           },
         ],
-        image: "https://images.unsplash.com/photo-1628088062854-d1870b4553da?w=800&h=600&fit=crop",
+        image: "/dairy-buffalo-milk-farm.jpg",
       },
       {
         id: 5,
@@ -344,12 +344,12 @@ export default function CustomerPage() {
             weightRangeMax: 25,
             age: "7 months",
             available: 12,
-            price: 680,
+            price: 550,
             category: "mutton",
             bulkAvailable: true,
           },
         ],
-        image: "https://images.unsplash.com/photo-1602470520998-f4a52199a3d6?w=800&h=600&fit=crop",
+        image: "/healthy-goat-farm-india.jpg",
       },
       {
         id: 7,
@@ -367,7 +367,7 @@ export default function CustomerPage() {
             weightRangeMax: 10,
             age: "Fresh Harvest",
             available: 200,
-            price: 120,
+            price: 140,
             category: "nuts",
             bulkAvailable: true,
           },
@@ -378,12 +378,148 @@ export default function CustomerPage() {
             weightRangeMax: 5,
             age: "Fresh Made",
             available: 50,
+            price: 380,
+            category: "nuts",
+            bulkAvailable: false,
+          },
+        ],
+        image: "https://tse4.mm.bing.net/th/id/OIP.Jaom5CRHXHFrl1w0QWogygHaE8?pid=Api&P=0&h=180",
+      },
+      {
+        id: 8,
+        name: "Dried Meat Products",
+        village: "Tandur",
+        distance: 22,
+        rating: 4.6,
+        verified: true,
+        location: { lat: 17.2456, lng: 77.5789 },
+        products: [
+          {
+            type: "Dried Goat Meat",
+            breed: "Sun Dried",
+            weightRangeMin: 0.5,
+            weightRangeMax: 5,
+            age: "Preserved",
+            available: 30,
+            price: 850,
+            category: "nuts",
+            bulkAvailable: true,
+          },
+          {
+            type: "Dried Chicken",
+            breed: "Smoked",
+            weightRangeMin: 0.5,
+            weightRangeMax: 3,
+            age: "Preserved",
+            available: 25,
+            price: 750,
+            category: "nuts",
+            bulkAvailable: false,
+          },
+        ],
+        image: "https://images.unsplash.com/photo-1607623814075-e51df1bdc82f?w=800&h=600&fit=crop",
+      },
+      {
+        id: 9,
+        name: "Organic Dried Vegetables",
+        village: "Zaheerabad",
+        distance: 28,
+        rating: 4.5,
+        verified: true,
+        location: { lat: 17.6789, lng: 77.6012 },
+        products: [
+          {
+            type: "Dried Tomatoes",
+            breed: "Organic",
+            weightRangeMin: 0.25,
+            weightRangeMax: 2,
+            age: "Sun Dried",
+            available: 40,
+            price: 320,
+            category: "nuts",
+            bulkAvailable: true,
+          },
+          {
+            type: "Dried Leafy Greens",
+            breed: "Organic",
+            weightRangeMin: 0.1,
+            weightRangeMax: 1,
+            age: "Dehydrated",
+            available: 35,
             price: 350,
             category: "nuts",
             bulkAvailable: false,
           },
         ],
-        image: "https://images.unsplash.com/photo-1592921870789-04563d55041c?w=800&h=600&fit=crop",
+        image: "https://images.unsplash.com/photo-1566385101042-1a0aa0c1268c?w=800&h=600&fit=crop",
+      },
+      {
+        id: 10,
+        name: "Country Eggs Farm",
+        village: "Pargi",
+        distance: 19,
+        rating: 4.8,
+        verified: true,
+        location: { lat: 17.1234, lng: 78.4567 },
+        products: [
+          {
+            type: "Country Eggs",
+            breed: "Free Range",
+            weightRangeMin: 1,
+            weightRangeMax: 1,
+            age: "Fresh Daily",
+            available: 100,
+            price: 7,
+            category: "nuts",
+            bulkAvailable: true,
+          },
+          {
+            type: "Duck Eggs",
+            breed: "Farm Fresh",
+            weightRangeMin: 1,
+            weightRangeMax: 1,
+            age: "Fresh Daily",
+            available: 50,
+            price: 10,
+            category: "nuts",
+            bulkAvailable: false,
+          },
+        ],
+        image: "https://images.unsplash.com/photo-1582722872445-44dc5f7e3c8f?w=800&h=600&fit=crop",
+      },
+      {
+        id: 11,
+        name: "Groundnut Haulms Supply",
+        village: "Kodangal",
+        distance: 30,
+        rating: 4.4,
+        verified: true,
+        location: { lat: 17.0123, lng: 77.8901 },
+        products: [
+          {
+            type: "Groundnut Haulms",
+            breed: "Cattle Fodder",
+            weightRangeMin: 10,
+            weightRangeMax: 100,
+            age: "Dried",
+            available: 500,
+            price: 30,
+            category: "nuts",
+            bulkAvailable: true,
+          },
+          {
+            type: "Groundnut Cake",
+            breed: "Animal Feed",
+            weightRangeMin: 5,
+            weightRangeMax: 50,
+            age: "Processed",
+            available: 200,
+            price: 50,
+            category: "nuts",
+            bulkAvailable: true,
+          },
+        ],
+        image: "https://images.unsplash.com/photo-1589927986089-35812388d1f4?w=800&h=600&fit=crop",
       },
     ],
     []
@@ -490,7 +626,8 @@ export default function CustomerPage() {
   return (
     <div className="min-h-screen bg-white" onTouchStart={handleTouchStart} onTouchMove={handleTouchMove} onTouchEnd={handleTouchEnd}>
       {/* Header */}
-      <header className="sticky top-0 z-50 bg-gradient-to-r from-primary to-primary/90 shadow-lg">
+      <header className="bg-gradient-to-r from-primary to-primary/90 shadow-lg rounded-b-xl relative">
+        <div className="absolute inset-0 bg-white rounded-b-xl" style={{ zIndex: -1, transform: 'scale(1.01)' }}></div>
         <div className="container mx-auto px-4 py-4">
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-4">
@@ -709,35 +846,136 @@ export default function CustomerPage() {
       {/* Category Pills */}
       <div className="border-b bg-white shadow-sm">
         <div className="container mx-auto px-4 py-4">
-          <div className="flex gap-3 overflow-x-auto pb-2" style={{ scrollbarWidth: 'none', msOverflowStyle: 'none' }}>
-            <style jsx>{`
-              div::-webkit-scrollbar {
-                display: none;
-              }
-            `}</style>
-            {categories.map((cat) => (
-              <button
-                key={cat.id}
-                onClick={() => setSelectedCategory(cat.id)}
-                className={`flex-shrink-0 w-[90px] h-[100px] rounded-[16px] flex flex-col items-center justify-center gap-1.5 transition-all duration-300 ${
-                  selectedCategory === cat.id
-                    ? "border-2 border-[#16a34a] shadow-[0_0_20px_rgba(22,163,74,0.3)]"
-                    : "border-2 border-transparent shadow-[0_4px_12px_rgba(0,0,0,0.08)] hover:scale-105"
-                }`}
-                style={{ backgroundColor: cat.bgColor }}
-              >
-                <div className="w-14 h-14 flex items-center justify-center overflow-hidden rounded-xl">
-                  <img 
-                    src={cat.image} 
-                    alt={cat.name}
-                    className="w-full h-full object-cover"
-                  />
-                </div>
-                <span className="text-xs font-medium text-center leading-tight px-1">
-                  {cat.name}
-                </span>
-              </button>
-            ))}
+          {currentScreen === 0 && (
+            <div className="flex gap-3 overflow-x-auto pb-2" style={{ scrollbarWidth: 'none', msOverflowStyle: 'none' }}>
+              <style jsx>{`
+                div::-webkit-scrollbar {
+                  display: none;
+                }
+              `}</style>
+              {categories.map((cat) => (
+                <button
+                  key={cat.id}
+                  onClick={() => setSelectedCategory(cat.id)}
+                  className={`flex-shrink-0 w-[90px] h-[100px] rounded-[16px] flex flex-col items-center justify-center gap-1.5 transition-all duration-300 ${
+                    selectedCategory === cat.id
+                      ? "border-2 border-[#16a34a] shadow-[0_0_20px_rgba(22,163,74,0.3)]"
+                      : "border-2 border-transparent shadow-[0_4px_12px_rgba(0,0,0,0.08)] hover:scale-105"
+                  }`}
+                  style={{ backgroundColor: cat.bgColor }}
+                >
+                  <div className="w-14 h-14 flex items-center justify-center overflow-hidden rounded-xl">
+                    <img 
+                      src={cat.image} 
+                      alt={cat.name}
+                      className="w-full h-full object-cover"
+                    />
+                  </div>
+                  <span className="text-xs font-medium text-center leading-tight px-1">
+                    {cat.name}
+                  </span>
+                </button>
+              ))}
+            </div>
+          )}
+
+          {currentScreen === 1 && (
+            <div className="py-2">
+              <div className="text-center mb-6">
+                <h2 className="text-3xl font-bold mb-2 bg-gradient-to-r from-primary to-secondary bg-clip-text text-transparent">By-Products & Value-Added</h2>
+                <p className="text-sm text-muted-foreground">Premium farm by-products for your needs</p>
+              </div>
+              <div className="grid grid-cols-2 gap-4">
+                {byProducts.map((product) => (
+                  <div key={product.id} className="h-full">
+                    <Card 
+                      className="h-full hover:shadow-2xl hover:scale-[1.03] transition-all duration-300 cursor-pointer border-2 border-gray-200 overflow-hidden group flex flex-col" 
+                      style={{ backgroundColor: product.bgColor }}
+                      onClick={() => {
+                        setCurrentScreen(0);
+                        setSelectedCategory("nuts");
+                        setFilters(prev => ({ ...prev, keyword: product.name.toLowerCase() }));
+                      }}
+                    >
+                      <CardContent className="p-0 flex flex-col h-full">
+                        <div className="relative w-full h-40 overflow-hidden flex-shrink-0">
+                          <img 
+                            src={product.image} 
+                            alt={product.name} 
+                            className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500" 
+                          />
+                          <div className="absolute inset-0 bg-gradient-to-t from-black/50 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
+                        </div>
+                        <div className="p-4 text-center flex flex-col flex-grow justify-between">
+                          <p className="font-bold text-base mb-3">{product.name}</p>
+                          <Button size="sm" className="w-full shadow-lg hover:shadow-xl transition-all">
+                            View Products →
+                          </Button>
+                        </div>
+                      </CardContent>
+                    </Card>
+                  </div>
+                ))}
+              </div>
+            </div>
+          )}
+
+          {currentScreen === 2 && (
+            <div className="py-2">
+              <h2 className="text-2xl font-bold mb-6 text-center bg-gradient-to-r from-primary to-secondary bg-clip-text text-transparent">Services & Subscriptions</h2>
+              <div className="space-y-4">
+                <Link href="/customer/bulk">
+                  <Card className="hover:shadow-2xl hover:scale-[1.02] transition-all cursor-pointer bg-gradient-to-br from-green-50 via-white to-green-100 border-2 border-green-200">
+                    <CardContent className="p-6">
+                      <div className="flex items-center gap-4">
+                        <div className="w-20 h-20 rounded-2xl bg-gradient-to-br from-green-400 to-green-500 flex items-center justify-center shadow-xl">
+                          <Calendar className="h-10 w-10 text-white" />
+                        </div>
+                        <div className="flex-1">
+                          <h3 className="text-xl font-bold mb-1">Function / Event Booking</h3>
+                          <p className="text-sm text-muted-foreground">Meat, Vegetables, Workers</p>
+                          <p className="text-xs text-green-600 font-semibold mt-1">One-click instant booking</p>
+                        </div>
+                        <Button size="lg" className="shadow-xl hover:shadow-2xl">Book Now</Button>
+                      </div>
+                    </CardContent>
+                  </Card>
+                </Link>
+
+                <Link href="/customer/apartment">
+                  <Card className="hover:shadow-2xl hover:scale-[1.02] transition-all cursor-pointer bg-gradient-to-br from-green-50 via-white to-green-100 border-2 border-green-200">
+                    <CardContent className="p-6">
+                      <div className="flex items-center gap-4">
+                        <div className="w-20 h-20 rounded-2xl bg-gradient-to-br from-green-400 to-green-500 flex items-center justify-center shadow-xl">
+                          <Home className="h-10 w-10 text-white" />
+                        </div>
+                        <div className="flex-1">
+                          <h3 className="text-xl font-bold mb-1">Apartment Subscription</h3>
+                          <p className="text-sm text-muted-foreground">Milk, Meat, Vegetables, Eggs</p>
+                          <p className="text-xs text-green-600 font-semibold mt-1">Monthly/Weekly auto-delivery</p>
+                        </div>
+                        <Button size="lg" className="shadow-xl hover:shadow-2xl">Subscribe</Button>
+                      </div>
+                    </CardContent>
+                  </Card>
+                </Link>
+              </div>
+            </div>
+          )}
+
+          {/* Screen Indicators */}
+          <div className="flex justify-center items-center gap-4 mt-4">
+            <div className="flex gap-2">
+              {[0, 1, 2].map((screen) => (
+                <button
+                  key={screen}
+                  onClick={() => setCurrentScreen(screen)}
+                  className={`h-2 rounded-full transition-all cursor-pointer ${
+                    currentScreen === screen ? "w-8 bg-primary" : "w-2 bg-gray-300 hover:bg-gray-400"
+                  }`}
+                />
+              ))}
+            </div>
           </div>
         </div>
       </div>
@@ -764,16 +1002,16 @@ export default function CustomerPage() {
         <div className="container mx-auto px-4 py-4">
           <div className="flex items-center justify-center gap-6 text-sm flex-wrap">
             <div className="flex items-center gap-2 bg-white px-4 py-2 rounded-full shadow-sm">
-              <ShieldCheck className="h-5 w-5 text-accent" />
-              <span className="font-semibold text-accent">Verified Farmers</span>
+              <ShieldCheck className="h-5 w-5 text-gray-600" />
+              <span className="font-semibold text-gray-700">Verified Farmers</span>
             </div>
             <div className="flex items-center gap-2 bg-white px-4 py-2 rounded-full shadow-sm">
-              <Video className="h-5 w-5 text-primary" />
-              <span className="font-semibold text-primary">Video Verification</span>
+              <Video className="h-5 w-5 text-gray-600" />
+              <span className="font-semibold text-gray-700">Video Verification</span>
             </div>
             <div className="flex items-center gap-2 bg-white px-4 py-2 rounded-full shadow-sm">
-              <Truck className="h-5 w-5 text-secondary" />
-              <span className="font-semibold text-secondary">Live Tracking</span>
+              <Truck className="h-5 w-5 text-gray-600" />
+              <span className="font-semibold text-gray-700">Live Tracking</span>
             </div>
           </div>
         </div>
@@ -1053,11 +1291,11 @@ export default function CustomerPage() {
           <Card className="mt-8 border-0 shadow-luxury-lg overflow-hidden relative group">
             <div className="absolute inset-0">
               <img 
-                src="https://images.unsplash.com/photo-1519225421980-715cb0215aed?w=1200&h=600&fit=crop" 
+                src="https://images.unsplash.com/photo-1511795409834-ef04bbd61622?q=80&w=7680&auto=format&fit=crop" 
                 alt="Function Hall"
                 className="w-full h-full object-cover"
               />
-              <div className="absolute inset-0 bg-gradient-to-br from-primary/90 via-accent/85 to-primary/90" />
+              <div className="absolute inset-0 bg-black/40" />
             </div>
             <CardContent className="p-10 md:p-12 text-center relative z-10">
               <div className="inline-block px-6 py-2 bg-white/20 backdrop-blur-sm rounded-full mb-4">

@@ -127,7 +127,7 @@ export default function BulkOrderPage() {
             <Card>
               <CardHeader>
                 <CardTitle className="flex items-center gap-2">
-                  <Calendar className="h-5 w-5 text-primary" />
+                  <Calendar className="h-5 w-5 text-green-600" />
                   Event Details
                 </CardTitle>
               </CardHeader>
@@ -203,7 +203,7 @@ export default function BulkOrderPage() {
             <Card>
               <CardHeader>
                 <CardTitle className="flex items-center gap-2">
-                  <ShoppingCart className="h-5 w-5 text-secondary" />
+                  <ShoppingCart className="h-5 w-5 text-green-600" />
                   Product Selection
                 </CardTitle>
               </CardHeader>
@@ -274,7 +274,7 @@ export default function BulkOrderPage() {
             <Card>
               <CardHeader>
                 <CardTitle className="flex items-center gap-2">
-                  <ChefHat className="h-5 w-5 text-secondary" />
+                  <ChefHat className="h-5 w-5 text-green-600" />
                   Additional Services
                 </CardTitle>
               </CardHeader>
@@ -283,7 +283,7 @@ export default function BulkOrderPage() {
                   <div className="p-4 border rounded-lg hover:bg-muted/50 transition-colors">
                     <div className="flex items-center justify-between mb-3">
                       <div className="flex items-center gap-3">
-                        <ChefHat className="h-6 w-6 text-primary" />
+                        <ChefHat className="h-6 w-6 text-green-600" />
                         <div>
                           <p className="font-semibold">Professional Butcher Service</p>
                           <p className="text-sm text-muted-foreground">Expert butcher for live cutting and meat preparation</p>
@@ -309,7 +309,7 @@ export default function BulkOrderPage() {
                   <div className="p-4 border rounded-lg hover:bg-muted/50 transition-colors">
                     <div className="flex items-center justify-between mb-3">
                       <div className="flex items-center gap-3">
-                        <Users className="h-6 w-6 text-primary" />
+                        <Users className="h-6 w-6 text-green-600" />
                         <div>
                           <p className="font-semibold">Catering Workers</p>
                           <p className="text-sm text-muted-foreground">Skilled catering staff for food preparation and service</p>
@@ -385,7 +385,7 @@ export default function BulkOrderPage() {
             <Card>
               <CardHeader>
                 <CardTitle className="flex items-center gap-2">
-                  <IndianRupee className="h-5 w-5 text-primary" />
+                  <IndianRupee className="h-5 w-5 text-green-600" />
                   Payment - Advance (30%)
                 </CardTitle>
               </CardHeader>

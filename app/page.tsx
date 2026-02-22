@@ -54,10 +54,10 @@ export default function LandingPage() {
             ].map((badge, i) => (
               <div
                 key={i}
-                className="flex items-center gap-2 bg-white/15 backdrop-blur-md px-5 py-3 rounded-full border border-white/20"
+                className="flex items-center gap-2 bg-white/10 backdrop-blur-sm px-5 py-3 rounded-full border border-white/10"
               >
-                <badge.icon className="h-5 w-5 text-accent" />
-                <span className="text-white font-semibold text-sm">
+                <badge.icon className="h-5 w-5 text-white/90" />
+                <span className="text-white/90 font-medium text-sm">
                   {badge.text}
                 </span>
               </div>
@@ -65,26 +65,28 @@ export default function LandingPage() {
           </div>
 
           <div className="max-w-md mx-auto">
-            <Card className="bg-white/98 backdrop-blur border-2 shadow-2xl">
-              <CardContent className="p-8 text-center">
-                <div className="w-24 h-24 mx-auto mb-6 rounded-3xl bg-gradient-to-br from-primary to-secondary flex items-center justify-center shadow-lg">
-                  <Store className="h-12 w-12 text-white" />
+            <Card className="bg-white/95 backdrop-blur-md border-2 border-white/30 shadow-2xl hover:shadow-3xl transition-all duration-300 hover:scale-[1.02]">
+              <CardContent className="p-10 text-center">
+                <div className="w-28 h-28 mx-auto mb-8 rounded-3xl bg-primary flex items-center justify-center shadow-2xl transform hover:rotate-6 transition-transform duration-300">
+                  <Store className="h-14 w-14 text-white" strokeWidth={2.5} />
                 </div>
-                <h2 className="text-3xl font-bold text-foreground mb-3">
+                <h2 className="text-4xl font-bold text-foreground mb-4">
                   Start Shopping Fresh
                 </h2>
-                <p className="text-muted-foreground mb-6 text-lg">
+                <p className="text-muted-foreground mb-8 text-lg leading-relaxed">
                   Get fresh meat, milk & organic vegetables delivered from
                   verified local farmers
                 </p>
                 <a href="/auth">
-                  <Button size="lg" className="w-full text-lg py-6 shadow-xl">
+                  <Button size="lg" className="w-full text-lg py-7 shadow-2xl hover:shadow-3xl transition-all duration-300 hover:scale-105">
                     Login / Register
                   </Button>
                 </a>
-                <p className="text-xs text-muted-foreground mt-4">
-                  New user? Register in just 30 seconds
-                </p>
+                <div className="mt-6 p-4 bg-gray-50 rounded-xl border border-gray-100">
+                  <p className="text-sm text-muted-foreground font-medium">
+                    ✨ New user? Register in just 30 seconds
+                  </p>
+                </div>
               </CardContent>
             </Card>
 
@@ -94,13 +96,13 @@ export default function LandingPage() {
               </p>
               <div className="flex items-center justify-center gap-4 flex-wrap">
                 <div className="flex items-center gap-2 bg-white/10 backdrop-blur px-4 py-2 rounded-full">
-                  <Sprout className="h-4 w-4 text-secondary" />
+                  <Sprout className="h-4 w-4 text-white/90" />
                   <span className="text-white text-sm font-medium">
                     Become a Farmer
                   </span>
                 </div>
                 <div className="flex items-center gap-2 bg-white/10 backdrop-blur px-4 py-2 rounded-full">
-                  <TruckIcon className="h-4 w-4 text-accent" />
+                  <TruckIcon className="h-4 w-4 text-white/90" />
                   <span className="text-white text-sm font-medium">
                     Become a Driver
                   </span>
