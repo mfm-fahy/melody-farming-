@@ -145,17 +145,18 @@ export default function AuthPage() {
 
   return (
     <div
-      className="min-h-screen flex items-center justify-center p-4"
-      style={{
-        backgroundImage: "url(/images/corn-field-sunset.jpeg)",
-        backgroundSize: "cover",
-        backgroundPosition: "center",
-      }}
+      className="min-h-screen flex items-center justify-center p-4 relative"
     >
-      <div className="absolute inset-0 bg-black/60" />
+      <div 
+        className="absolute inset-0 bg-cover bg-center"
+        style={{
+          backgroundImage: "url('https://images.unsplash.com/photo-1625246333195-78d9c38ad449?q=80&w=7680&auto=format&fit=crop')",
+        }}
+      />
+      <div className="absolute inset-0 bg-gradient-to-br from-black/70 via-black/50 to-primary/30 backdrop-blur-[2px]" />
 
       <div className="relative z-10 w-full max-w-md">
-        <Card className="shadow-2xl border-2">
+        <Card className="shadow-2xl border-2 border-white/20 backdrop-blur-sm bg-white/95">
           <CardHeader className="space-y-4">
             <Link href="/">
               <Button variant="ghost" size="sm" className="gap-2 mb-2">
